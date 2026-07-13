@@ -1,0 +1,22 @@
+package com.alexandria.dto.avaliacao;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public record CriarAvaliacaoRequest(
+        @NotBlank(message = "O identificador do livro é obrigatório.")
+        String identificadorExterno,
+
+        @NotNull(message = "A nota é obrigatória.")
+        @Min(value = 1, message = "A nota mínima é 1.")
+        @Max(value = 5, message = "A nota máxima é 5.")
+        Integer nota,
+
+        @NotBlank(message = "A resenha é obrigatória.")
+        @Size(max = 5000, message = "A resenha deve ter no máximo 5000 caracteres.")
+        String resenha
+) {
+}
