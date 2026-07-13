@@ -1,0 +1,21 @@
+.input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(204, 214, 246, 0.18);
+  background: var(--light-navy);
+  color: var(--light-slate);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.input::placeholder {
+  color: var(--slate);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--cyan);
+}

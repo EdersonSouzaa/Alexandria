@@ -1,0 +1,32 @@
+.xp-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  background: var(--navy);
+  border: 1px solid var(--cyan);
+  color: var(--light-slate);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  animation: xp-toast-in 0.25s ease;
+}
+
+.xp-toast__icon {
+  color: var(--cyan);
+  font-size: 1.1rem;
+}
+
+@keyframes xp-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
