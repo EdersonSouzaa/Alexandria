@@ -1,0 +1,35 @@
+.biblioteca__filtros {
+  margin: 24px 0 32px;
+  gap: 20px;
+}
+
+.biblioteca__filtros select {
+  max-width: 220px;
+}
+
+.biblioteca__acoes {
+  margin-top: 10px;
+}
+
+.biblioteca__favorito,
+.biblioteca__remover {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--slate);
+  padding: 0;
+}
+
+.biblioteca__favorito--ativo {
+  color: var(--cyan);
+}
+
+.biblioteca__favorito:hover {
+  color: var(--cyan);
+}
+
+.biblioteca__remover:hover {
+  color: var(--danger);
+}

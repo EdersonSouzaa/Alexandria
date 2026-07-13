@@ -1,0 +1,50 @@
+.comunidade-post__conteudo {
+  white-space: pre-line;
+  margin: 12px 0;
+}
+
+.comunidade-post__acoes {
+  gap: 20px;
+}
+
+.comunidade-post__curtir,
+.comunidade-post__comentar {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--slate);
+  cursor: pointer;
+  padding: 0;
+}
+
+.comunidade-post__curtir:hover,
+.comunidade-post__comentar:hover {
+  color: var(--light-slate);
+}
+
+.comunidade-post__curtir--ativo {
+  color: var(--danger);
+}
+
+.comunidade-post__comentarios {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(204, 214, 246, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comunidade-comentario p {
+  margin: 2px 0 0;
+}
+
+.comunidade-post__comentarios form {
+  gap: 12px;
+}
+
+.comunidade-post__comentarios .form-field {
+  flex: 1;
+  margin-bottom: 0;
+}

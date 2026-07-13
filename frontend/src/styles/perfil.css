@@ -1,0 +1,6 @@
+@import './auth.css';
+
+.perfil__card {
+  max-width: 480px;
+  margin-top: 24px;
+}

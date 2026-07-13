@@ -1,0 +1,51 @@
+.conquistas__nivel {
+  margin: 24px 0 40px;
+}
+
+.conquistas__barra {
+  margin-top: 16px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--light-navy);
+  overflow: hidden;
+}
+
+.conquistas__barra-preenchida {
+  height: 100%;
+  background: var(--cyan);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.conquistas__secao {
+  margin: 40px 0 20px;
+  font-size: 1.3rem;
+}
+
+.conquistas__estatistica {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.conquistas__estatistica-valor {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--cyan);
+}
+
+.conquistas__conquista {
+  opacity: 0.45;
+}
+
+.conquistas__conquista--desbloqueada {
+  opacity: 1;
+  border-color: rgba(100, 255, 218, 0.35);
+}
+
+.conquistas__historico-item {
+  padding: 12px 16px;
+  background: var(--navy);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}

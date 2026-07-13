@@ -1,0 +1,25 @@
+.avaliacao-item {
+  gap: 12px;
+}
+
+.avaliacao-item__link {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--slate);
+  cursor: pointer;
+  padding: 0;
+}
+
+.avaliacao-item__link:hover {
+  color: var(--cyan);
+}
+
+.avaliacao-item__link--danger:hover {
+  color: var(--danger);
+}
+
+.avaliacao-item__edicao {
+  margin-top: 12px;
+}

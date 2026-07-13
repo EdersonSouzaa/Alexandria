@@ -1,0 +1,17 @@
+.explorar__filtros {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: start;
+  margin: 24px 0 40px;
+}
+
+.explorar__filtros .form-field {
+  margin-bottom: 0;
+}
+
+@media (max-width: 800px) {
+  .explorar__filtros {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,36 @@
+.landing__hero {
+  padding: 96px 24px 64px;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.landing__hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  margin-bottom: 20px;
+}
+
+.landing__hero p {
+  font-size: 1.05rem;
+  margin-bottom: 32px;
+}
+
+.landing__search {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.landing__search .form-field {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.landing__cta {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
