@@ -1,0 +1,271 @@
+# ALEXANDRIA
+
+Plataforma web para organizar leituras, montar uma biblioteca pessoal digital e acompanhar a jornada do leitor — inspirada na ideia da antiga Biblioteca de Alexandria, com uma coruja como mascote/logo.
+
+## Sobre o projeto
+
+O ALEXANDRIA é uma aplicação full-stack (React + Spring Boot) que funciona como um "Goodreads" pessoal: o usuário pesquisa livros através da Google Books API, salva os que quiser em uma biblioteca própria, controla o status de leitura de cada obra, escreve avaliações com nota e resenha, participa de uma comunidade interna de leitores e evolui em um sistema de gamificação (XP, níveis e conquistas) conforme usa o app.
+
+Todo o produto — interface, textos e domínio de dados — é em português (pt-BR), com foco em um público leitor brasileiro. O projeto está estruturado como um monorepo com duas aplicações independentes, publicadas separadamente na Railway:
+
+- **Frontend**: https://frontend-production-afa3.up.railway.app
+- **Backend**: https://backend-production-ddd2.up.railway.app
+- **Health check da API**: https://backend-production-ddd2.up.railway.app/api/health
+
+> Observação: abrir a URL raiz do backend diretamente pode retornar acesso negado, pois a maior parte da API exige autenticação JWT. Para verificar disponibilidade, use o endpoint `/api/health`.
+
+## Funcionalidades
+
+### Conta e autenticação
+- Cadastro e login de usuários com autenticação via JWT (token stateless, expira em 24h).
+- Recuperação de senha por token temporário (esqueci a senha / redefinir senha). Em ambiente de desenvolvimento, sem provedor de e-mail configurado, o token é retornado na resposta da API e logado no backend — ver `backend/.env.example`.
+- Perfil do usuário com consulta e edição de dados.
+- Isolamento total de dados entre contas diferentes (cada usuário só acessa seus próprios registros).
+
+### Descoberta e catálogo de livros
+- Pesquisa de livros usando a Google Books API, intermediada pelo backend (filtros por termo, categoria, ordenação e qualidade do resultado, com paginação).
+- Cache de buscas e detalhes de livros (Caffeine, TTL de 60 min) para reduzir chamadas repetidas à API do Google.
+- Tela de detalhes do livro com capa, autor, descrição, editora, data de publicação e número de páginas.
+- Página inicial (landing page) pública com busca rápida, cards de destaque e apresentação do produto.
+
+### Biblioteca pessoal
+- Adição de livros à biblioteca pessoal.
+- Status de leitura por livro: **quero ler**, **lendo**, **lido** e **abandonado**.
+- Marcação de livros como favoritos.
+- Remoção de livros da biblioteca.
+
+### Avaliações
+- Avaliações com nota de 1 a 5 estrelas e resenha em texto (até 5000 caracteres).
+- Edição, exclusão e listagem das avaliações do usuário logado.
+- Exportação das avaliações em CSV.
+
+### Comunidade
+- Feed de comunidade com publicações, curtidas e comentários.
+- Publicação automática no feed sempre que uma avaliação é criada (integração cruzada entre os módulos de Avaliações e Comunidade).
+
+### Gamificação
+- Sistema de XP, níveis e conquistas persistido por usuário.
+- Histórico de atividades e estatísticas agregadas (total de livros, lidos, avaliações, favoritos, posts, abandonados, quero-ler, lendo).
+- Notificação visual (toast) ao ganhar XP.
+
+### Confiabilidade
+- Endpoint de health check público (`/api/health`) para monitoramento de disponibilidade (usado pela Railway).
+
+## Estilo de design
+
+O visual segue um tema **dark mode** único (sem alternância para modo claro), com uma paleta "céu noturno" que remete a uma biblioteca à noite:
+
+| Token | Cor | Uso |
+|---|---|---|
+| `--dark-navy` | `#0a192f` | Fundo principal |
+| `--navy` | `#112240` | Fundo de cards/seções |
+| `--light-navy` | `#1d2d44` | Camadas de destaque |
+| `--slate` | `#8892b0` | Texto secundário |
+| `--light-slate` | `#ccd6f6` | Texto principal |
+| `--cyan` | `#64ffda` | Cor de destaque/marca (botões, links, seleção de texto) |
+| `--danger` | `#ff7b72` | Erros e ações destrutivas |
+
+Outros pontos do design:
+- **Tipografia**: fonte Inter, títulos com peso alto e letter-spacing negativo para um visual moderno e condensado.
+- **Fundo**: gradientes radiais (brilho ciano) sobre gradiente linear navy, criando profundidade sem uso de sombras pesadas.
+- **Botões**: bordas bem arredondadas (14px), altura mínima generosa, variante primária (preenchimento ciano sólido) e secundária (contorno translúcido), com leve elevação (`translateY`) no hover.
+- **Identidade visual**: mascote de coruja (SVG `OwlLogo`) ao lado do wordmark "Alexandria" na navbar, reforçando a referência à biblioteca antiga. *(Placeholder provisório — pode ser substituído por uma arte final `coruja.png` depois.)*
+- **Layout**: cards em grid para destaques e vitrines de livros, rótulos "kicker" acima de títulos — um estilo de landing page de produto SaaS aplicado ao conceito de biblioteca digital.
+- **CSS**: escrito à mão, sem framework de utilitários (sem Tailwind) nem CSS-in-JS — um arquivo `global.css` com variáveis + um arquivo de estilo por página/componente.
+
+## Tecnologias
+
+### Frontend (`/frontend`)
+- **React 19** com **Vite** (build tool e dev server).
+- **React Router DOM v7** para roteamento, com componente `ProtectedRoute` guardando rotas autenticadas.
+- **Axios** para consumo da API (uma instância base + um módulo de serviço por domínio: livros, biblioteca, avaliações, comunidade, gamificação).
+- **Context API** do React para estado global (`AuthContext` para sessão/JWT, `GamificacaoContext` para XP/conquistas) — sem Redux/Zustand.
+- **CSS puro** organizado por página e por componente, sem framework de estilos.
+- **ESLint 9** (flat config) com plugins de React Hooks e React Refresh.
+- Script customizado de deploy (`scripts/preview.mjs`) usado como `npm start` na Railway.
+
+### Backend (`/backend`)
+- **Java 17** com **Maven** (via Maven Wrapper).
+- **Spring Boot 4.0.5** (Spring MVC / REST, não WebFlux).
+- **Spring Security** com autenticação **JWT stateless** (filtro customizado + `JwtUtil`, tokens assinados via `jjwt`, senhas com BCrypt).
+- **Spring Data JPA + Hibernate** sobre **PostgreSQL**.
+- **Caffeine** para cache em memória (buscas e detalhes de livros).
+- **Google Books API** como única integração externa de dados (idioma `pt`, país `BR`).
+- **Lombok** para reduzir boilerplate em entidades/DTOs e **Bean Validation** (`jakarta.validation`) nos DTOs de requisição.
+- **JUnit** (Spring Boot Test) para testes.
+- Sem filas/mensageria, sem jobs agendados, sem provedor de e-mail ou pagamento — a integração externa é só o Google Books.
+
+### Deploy
+- **Railway** hospedando frontend, backend e um PostgreSQL gerenciado.
+- **GitHub** como repositório remoto.
+
+## Arquitetura da API
+
+API REST em JSON sob o prefixo `/api`, organizada por controller de domínio:
+
+| Controller | Rota base | Responsabilidade |
+|---|---|---|
+| `AuthController` | `/api/auth` | Registro, login, perfil, esqueci/redefinir senha |
+| `LivroController` | `/api/livros` | Busca (`/buscar`) e detalhe (`/google/{id}`) via Google Books |
+| `BibliotecaController` | `/api/biblioteca` | Adicionar/listar/remover livros, status de leitura, favoritos |
+| `AvaliacaoController` | `/api/avaliacoes` | CRUD de avaliações (nota + resenha) + export CSV |
+| `ComunidadeController` | `/api/comunidade/posts` | Posts, curtidas, comentários |
+| `GamificacaoController` | `/api/gamificacao` | Consulta de XP/conquistas/estatísticas |
+| `HealthController` | `/api/health` | Health check público |
+
+Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `/api/health/**` são públicos; todo o restante exige um JWT válido no header `Authorization: Bearer <token>`.
+
+## Modelo de dados
+
+| Tabela | Principais campos | Observações |
+|---|---|---|
+| `users` | email (único), name, password (hash bcrypt), reset_password_token, reset_password_expiry | Entidade central de conta/autenticação |
+| `livros` | titulo, autor, descricao, capa, identificador_externo (id do Google Books), editora, data_publicacao, categoria, numero_paginas | Cache local dos livros vindos do Google Books |
+| `biblioteca` | usuario_id, livro_id, status_leitura (enum), favorito | Único por (usuário, livro) |
+| `avaliacoes` | usuario_id, livro_id, nota (1–5), resenha | Único por (usuário, livro) |
+| `comunidade_posts` | usuario_id, livro_id, avaliacao_id, conteudo | Post do feed (gerado a partir de uma avaliação) |
+| `comunidade_curtida` | usuario_id, post_id | Curtida (toggle) |
+| `comunidade_comentario` | usuario_id, post_id, conteudo | Comentário em post |
+| `gamificacao` | usuario_id (1:1), xp, conquistas_desbloqueadas (JSON), historico (JSON), contadores agregados | XP, conquistas e histórico armazenados como JSON em colunas TEXT |
+
+Sem migrações formais (Flyway/Liquibase): o schema é gerenciado pelo Hibernate via `ddl-auto`.
+
+## Estrutura do projeto
+
+```text
+Alexandria/
+  backend/    API REST em Spring Boot (Java 17)
+    src/main/java/com/alexandria/
+      config/       Segurança, JWT, cache
+      controller/    Endpoints REST
+      dto/           Objetos de request/response
+      exception/     Tratamento global de erros
+      model/         Entidades JPA
+      repository/    Repositórios Spring Data
+      service/       Regras de negócio
+  frontend/   Aplicação web em React + Vite
+    src/
+      routes/       Definição de rotas e proteção de rotas
+      context/      Estado global (Auth, Gamificação)
+      pages/        Telas da aplicação
+      components/   Componentes reutilizáveis (Navbar, Button, Input...)
+      services/      Chamadas à API por domínio
+      styles/        CSS global + por página/componente
+```
+
+## Como rodar localmente
+
+### 1. Backend
+
+Entre na pasta do backend:
+
+```bash
+cd backend
+```
+
+Copie `backend/.env.example` para `backend/.env` e preencha com seus valores (ou exporte as variáveis diretamente no seu shell/IDE):
+
+```env
+SPRING_PROFILES_ACTIVE=local
+PORT=8080
+DB_URL=jdbc:postgresql://localhost:5432/alexandria
+DB_USERNAME=postgres
+DB_PASSWORD=sua_senha_local
+JWT_SECRET=troque_por_uma_chave_forte_com_no_minimo_32_caracteres
+FRONTEND_URL=http://localhost:5173
+JPA_DDL_AUTO=update
+JPA_SHOW_SQL=false
+JPA_FORMAT_SQL=false
+GOOGLE_BOOKS_API_KEY=SUA_CHAVE_AQUI
+GOOGLE_BOOKS_LANG=pt
+GOOGLE_BOOKS_COUNTRY=BR
+```
+
+Crie o banco `alexandria` no seu PostgreSQL local antes de subir a aplicação.
+
+Execute:
+
+```bash
+./mvnw spring-boot:run
+```
+
+No Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+### 2. Frontend
+
+Entre na pasta do frontend:
+
+```bash
+cd frontend
+```
+
+Crie `frontend/.env.local` com a URL da API:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+Instale as dependências e rode:
+
+```bash
+npm install
+npm run dev
+```
+
+## Build e validação
+
+Backend:
+
+```bash
+cd backend
+./mvnw test
+./mvnw -DskipTests package
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run build
+```
+
+## Variáveis no Railway
+
+### Backend
+
+- `DB_URL`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `JWT_SECRET`
+- `FRONTEND_URL`
+- `GOOGLE_BOOKS_API_KEY`
+- `GOOGLE_BOOKS_LANG`
+- `GOOGLE_BOOKS_COUNTRY`
+- `JPA_DDL_AUTO`
+- `JPA_SHOW_SQL`
+- `JPA_FORMAT_SQL`
+
+### Frontend
+
+- `VITE_API_URL`
+
+Importante: chaves reais, senhas e segredos devem ficar apenas nas variáveis de ambiente da Railway ou em arquivos locais ignorados pelo Git.
+
+## Roteiro rápido para demonstração
+
+1. Abrir o frontend publicado (ou `localhost:5173` em dev).
+2. Criar uma conta nova.
+3. Fazer login.
+4. Pesquisar um livro na aba Explorar.
+5. Abrir os detalhes e adicionar o livro à biblioteca.
+6. Alterar status de leitura e marcar como favorito.
+7. Criar uma avaliação com nota e resenha.
+8. Abrir Minhas avaliações e testar edição/exportação CSV.
+9. Abrir Comunidade e confirmar a publicação automática da avaliação.
+10. Curtir e comentar uma publicação.
+11. Abrir Conquistas e verificar XP, nível e histórico.
+12. Entrar com outra conta para demonstrar isolamento de dados.
