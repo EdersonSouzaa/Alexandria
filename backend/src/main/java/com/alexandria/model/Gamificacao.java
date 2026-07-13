@@ -31,14 +31,12 @@ public class Gamificacao {
     @Builder.Default
     private int xp = 0;
 
-    @Lob
-    @Column(name = "conquistas_desbloqueadas")
+    @Column(name = "conquistas_desbloqueadas", columnDefinition = "TEXT")
     @Convert(converter = StringListJsonConverter.class)
     @Builder.Default
     private List<String> conquistasDesbloqueadas = new ArrayList<>();
 
-    @Lob
-    @Column(name = "historico")
+    @Column(name = "historico", columnDefinition = "TEXT")
     @Convert(converter = HistoricoJsonConverter.class)
     @Builder.Default
     private List<HistoricoItem> historico = new ArrayList<>();

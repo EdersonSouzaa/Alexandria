@@ -28,7 +28,7 @@ public class Livro {
 
     private String autor;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String descricao;
 
     private String capa;

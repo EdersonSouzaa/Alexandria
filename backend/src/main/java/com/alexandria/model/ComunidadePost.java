@@ -34,8 +34,7 @@ public class ComunidadePost {
     @JoinColumn(name = "avaliacao_id", unique = true)
     private Avaliacao avaliacao;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String conteudo;
 
     @Column(name = "criado_em", nullable = false, updatable = false)

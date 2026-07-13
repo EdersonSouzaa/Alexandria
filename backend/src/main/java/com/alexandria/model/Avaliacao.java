@@ -33,8 +33,7 @@ public class Avaliacao {
     @Column(nullable = false)
     private Integer nota;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String resenha;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
