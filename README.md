@@ -4,7 +4,7 @@ Plataforma web para organizar leituras, montar uma biblioteca pessoal digital e 
 
 ## Sobre o projeto
 
-O ALEXANDRIA é uma aplicação full-stack (React + Spring Boot) que funciona como um "Goodreads" pessoal: o usuário pesquisa livros através da Google Books API, salva os que quiser em uma biblioteca própria, controla o status de leitura de cada obra, escreve avaliações com nota e resenha, participa de uma comunidade interna de leitores e evolui em um sistema de gamificação (XP, níveis e conquistas) conforme usa o app.
+O ALEXANDRIA é uma aplicação full-stack (React + Node.js) que funciona como um "Goodreads" pessoal: o usuário pesquisa livros através da Google Books API, salva os que quiser em uma biblioteca própria, controla o status de leitura de cada obra, escreve avaliações com nota e resenha, participa de uma comunidade interna de leitores e evolui em um sistema de gamificação (XP, níveis e conquistas) conforme usa o app.
 
 Todo o produto — interface, textos e domínio de dados — é em português (pt-BR), com foco em um público leitor brasileiro. O projeto está estruturado como um monorepo com duas aplicações independentes, publicadas separadamente na Railway:
 
@@ -24,7 +24,7 @@ Todo o produto — interface, textos e domínio de dados — é em português (p
 
 ### Descoberta e catálogo de livros
 - Pesquisa de livros usando a Google Books API, intermediada pelo backend (filtros por termo, categoria, ordenação e qualidade do resultado, com paginação).
-- Cache de buscas e detalhes de livros (Caffeine, TTL de 60 min) para reduzir chamadas repetidas à API do Google.
+- Cache de buscas e detalhes de livros (em memória, TTL de 60 min) para reduzir chamadas repetidas à API do Google.
 - Tela de detalhes do livro com capa, autor, descrição, editora, data de publicação e número de páginas.
 - Página inicial (landing page) pública com busca rápida, cards de destaque e apresentação do produto.
 
@@ -85,14 +85,13 @@ Outros pontos do design:
 - Script customizado de deploy (`scripts/preview.mjs`) usado como `npm start` na Railway.
 
 ### Backend (`/backend`)
-- **Java 17** com **Maven** (via Maven Wrapper).
-- **Spring Boot 4.0.5** (Spring MVC / REST, não WebFlux).
-- **Spring Security** com autenticação **JWT stateless** (filtro customizado + `JwtUtil`, tokens assinados via `jjwt`, senhas com BCrypt).
-- **Spring Data JPA + Hibernate** sobre **PostgreSQL**.
-- **Caffeine** para cache em memória (buscas e detalhes de livros).
-- **Google Books API** como única integração externa de dados (idioma `pt`, país `BR`).
-- **Lombok** para reduzir boilerplate em entidades/DTOs e **Bean Validation** (`jakarta.validation`) nos DTOs de requisição.
-- **JUnit** (Spring Boot Test) para testes.
+- **Node.js** (JavaScript puro, CommonJS) com **Express 4** para a API REST.
+- Autenticação **JWT stateless** via middleware customizado (`requireAuth`), tokens assinados com `jsonwebtoken`, senhas com `bcryptjs`.
+- **Prisma ORM** sobre **PostgreSQL** — schema declarativo (`prisma/schema.prisma`) e migrações versionadas (`prisma/migrations/`).
+- Cache em memória com TTL (60 min) para buscas e detalhes de livros, implementado à mão (`src/lib/cache.js`).
+- **Google Books API** como única integração externa de dados (idioma `pt`, país `BR`), consumida via `fetch` nativo do Node.
+- **Zod** para validação de DTOs de requisição.
+- **Test runner nativo do Node** (`node --test`) + **Supertest** para testes de rota.
 - Sem filas/mensageria, sem jobs agendados, sem provedor de e-mail ou pagamento — a integração externa é só o Google Books.
 
 ### Deploy
@@ -101,19 +100,19 @@ Outros pontos do design:
 
 ## Arquitetura da API
 
-API REST em JSON sob o prefixo `/api`, organizada por controller de domínio:
+API REST em JSON sob o prefixo `/api`, organizada por router de domínio (`src/routes/`):
 
-| Controller | Rota base | Responsabilidade |
+| Router | Rota base | Responsabilidade |
 |---|---|---|
-| `AuthController` | `/api/auth` | Registro, login, perfil, esqueci/redefinir senha |
-| `LivroController` | `/api/livros` | Busca (`/buscar`) e detalhe (`/google/{id}`) via Google Books |
-| `BibliotecaController` | `/api/biblioteca` | Adicionar/listar/remover livros, status de leitura, favoritos |
-| `AvaliacaoController` | `/api/avaliacoes` | CRUD de avaliações (nota + resenha) + export CSV |
-| `ComunidadeController` | `/api/comunidade/posts` | Posts, curtidas, comentários |
-| `GamificacaoController` | `/api/gamificacao` | Consulta de XP/conquistas/estatísticas |
-| `HealthController` | `/api/health` | Health check público |
+| `authRoutes` | `/api/auth` | Registro, login, perfil, esqueci/redefinir senha |
+| `livroRoutes` | `/api/livros` | Busca (`/buscar`) e detalhe (`/google/:id`) via Google Books |
+| `bibliotecaRoutes` | `/api/biblioteca` | Adicionar/listar/remover livros, status de leitura, favoritos |
+| `avaliacaoRoutes` | `/api/avaliacoes` | CRUD de avaliações (nota + resenha) + export CSV |
+| `comunidadeRoutes` | `/api/comunidade/posts` | Posts, curtidas, comentários |
+| `gamificacaoRoutes` | `/api/gamificacao` | Consulta de XP/conquistas/estatísticas |
+| `healthRoutes` | `/api/health` | Health check público |
 
-Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `/api/health/**` são públicos; todo o restante exige um JWT válido no header `Authorization: Bearer <token>`.
+Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `/api/health` são públicos; todo o restante exige um JWT válido no header `Authorization: Bearer <token>` (verificado pelo middleware `requireAuth`).
 
 ## Modelo de dados
 
@@ -128,21 +127,25 @@ Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `
 | `comunidade_comentario` | usuario_id, post_id, conteudo | Comentário em post |
 | `gamificacao` | usuario_id (1:1), xp, conquistas_desbloqueadas (JSON), historico (JSON), contadores agregados | XP, conquistas e histórico armazenados como JSON em colunas TEXT |
 
-Sem migrações formais (Flyway/Liquibase): o schema é gerenciado pelo Hibernate via `ddl-auto`.
+Migrações versionadas via Prisma (`prisma migrate`), com histórico em `backend/prisma/migrations/`.
 
 ## Estrutura do projeto
 
 ```text
 Alexandria/
-  backend/    API REST em Spring Boot (Java 17)
-    src/main/java/com/alexandria/
-      config/       Segurança, JWT, cache
-      controller/    Endpoints REST
-      dto/           Objetos de request/response
-      exception/     Tratamento global de erros
-      model/         Entidades JPA
-      repository/    Repositórios Spring Data
-      service/       Regras de negócio
+  backend/    API REST em Node.js + Express + Prisma
+    prisma/
+      schema.prisma   Modelo de dados (tabelas, relações, enums)
+      migrations/     Histórico de migrações aplicadas
+    src/
+      lib/            Prisma client, JWT, cache TTL, erros customizados
+      middleware/      Autenticação, validação (Zod), tratamento global de erros
+      schemas/         Schemas Zod de request por domínio
+      services/        Regras de negócio por domínio
+      routes/          Routers Express por domínio
+      app.js           Configuração do Express (CORS, rotas, error handler)
+      server.js        Ponto de entrada (sobe o servidor HTTP)
+    test/              Testes (node --test + Supertest)
   frontend/   Aplicação web em React + Vite
     src/
       routes/       Definição de rotas e proteção de rotas
@@ -163,36 +166,31 @@ Entre na pasta do backend:
 cd backend
 ```
 
-Copie `backend/.env.example` para `backend/.env` e preencha com seus valores (ou exporte as variáveis diretamente no seu shell/IDE):
+Copie `backend/.env.example` para `backend/.env` e preencha com seus valores:
 
 ```env
-SPRING_PROFILES_ACTIVE=local
 PORT=8080
-DB_URL=jdbc:postgresql://localhost:5432/alexandria
-DB_USERNAME=postgres
-DB_PASSWORD=sua_senha_local
+DATABASE_URL=postgresql://postgres:sua_senha_local@localhost:5432/alexandria_web?schema=public
 JWT_SECRET=troque_por_uma_chave_forte_com_no_minimo_32_caracteres
 FRONTEND_URL=http://localhost:5173
-JPA_DDL_AUTO=update
-JPA_SHOW_SQL=false
-JPA_FORMAT_SQL=false
 GOOGLE_BOOKS_API_KEY=SUA_CHAVE_AQUI
 GOOGLE_BOOKS_LANG=pt
 GOOGLE_BOOKS_COUNTRY=BR
 ```
 
-Crie o banco `alexandria` no seu PostgreSQL local antes de subir a aplicação.
+> Se sua senha do Postgres tiver caracteres especiais (`@`, `!`, `#`...), faça o *URL encode* deles na `DATABASE_URL` (ex.: `@` vira `%40`).
+
+Crie o banco `alexandria_web` no seu PostgreSQL local antes de subir a aplicação, depois instale as dependências e aplique as migrações do Prisma:
+
+```bash
+npm install
+npx prisma migrate dev
+```
 
 Execute:
 
 ```bash
-./mvnw spring-boot:run
-```
-
-No Windows:
-
-```powershell
-.\mvnw.cmd spring-boot:run
+npm run dev
 ```
 
 ### 2. Frontend
@@ -222,8 +220,7 @@ Backend:
 
 ```bash
 cd backend
-./mvnw test
-./mvnw -DskipTests package
+npm test
 ```
 
 Frontend:
@@ -237,17 +234,14 @@ npm run build
 
 ### Backend
 
-- `DB_URL`
-- `DB_USERNAME`
-- `DB_PASSWORD`
+- `DATABASE_URL`
 - `JWT_SECRET`
 - `FRONTEND_URL`
 - `GOOGLE_BOOKS_API_KEY`
 - `GOOGLE_BOOKS_LANG`
 - `GOOGLE_BOOKS_COUNTRY`
-- `JPA_DDL_AUTO`
-- `JPA_SHOW_SQL`
-- `JPA_FORMAT_SQL`
+
+O comando de start (`npm start`) roda `prisma migrate deploy` antes de subir o servidor, aplicando migrações pendentes automaticamente no deploy.
 
 ### Frontend
 

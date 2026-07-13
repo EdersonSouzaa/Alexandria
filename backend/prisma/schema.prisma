@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusLeitura {
+  QUERO_LER
+  LENDO
+  LIDO
+  ABANDONADO
+}
+
+model User {
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  email                String    @unique
+  password             String
+  resetPasswordToken   String?   @unique @map("reset_password_token")
+  resetPasswordExpiry  DateTime? @map("reset_password_expiry")
+  criadoEm             DateTime  @default(now()) @map("criado_em")
+
+  itensBiblioteca ItemBiblioteca[]
+  avaliacoes      Avaliacao[]
+  posts           ComunidadePost[]
+  curtidas        ComunidadeCurtida[]
+  comentarios     ComunidadeComentario[]
+  gamificacao     Gamificacao?
+
+  @@map("users")
+}
+
+model Livro {
+  id                    Int     @id @default(autoincrement())
+  identificadorExterno  String  @unique @map("identificador_externo")
+  titulo                String
+  autor                 String?
+  descricao             String? @db.Text
+  capa                  String?
+  editora               String?
+  dataPublicacao        String? @map("data_publicacao")
+  categoria             String?
+  numeroPaginas         Int?    @map("numero_paginas")
+
+  itensBiblioteca ItemBiblioteca[]
+  avaliacoes      Avaliacao[]
+  posts           ComunidadePost[]
+
+  @@map("livros")
+}
+
+model ItemBiblioteca {
+  id            Int           @id @default(autoincrement())
+  usuarioId     Int           @map("usuario_id")
+  livroId       Int           @map("livro_id")
+  statusLeitura StatusLeitura @default(QUERO_LER) @map("status_leitura")
+  favorito      Boolean       @default(false)
+  criadoEm      DateTime      @default(now()) @map("criado_em")
+  atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
+
+  usuario User  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  livro   Livro @relation(fields: [livroId], references: [id])
+
+  @@unique([usuarioId, livroId])
+  @@map("biblioteca")
+}
+
+model Avaliacao {
+  id           Int      @id @default(autoincrement())
+  usuarioId    Int      @map("usuario_id")
+  livroId      Int      @map("livro_id")
+  nota         Int
+  resenha      String   @db.Text
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  usuario User            @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  livro   Livro           @relation(fields: [livroId], references: [id])
+  post    ComunidadePost?
+
+  @@unique([usuarioId, livroId])
+  @@map("avaliacoes")
+}
+
+model ComunidadePost {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int      @map("usuario_id")
+  livroId     Int?     @map("livro_id")
+  avaliacaoId Int?     @unique @map("avaliacao_id")
+  conteudo    String   @db.Text
+  criadoEm    DateTime @default(now()) @map("criado_em")
+
+  usuario     User                   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  livro       Livro?                 @relation(fields: [livroId], references: [id])
+  avaliacao   Avaliacao?             @relation(fields: [avaliacaoId], references: [id])
+  curtidas    ComunidadeCurtida[]
+  comentarios ComunidadeComentario[]
+
+  @@map("comunidade_posts")
+}
+
+model ComunidadeCurtida {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int      @map("usuario_id")
+  postId    Int      @map("post_id")
+  criadoEm  DateTime @default(now()) @map("criado_em")
+
+  usuario User           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  post    ComunidadePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, postId])
+  @@map("comunidade_curtida")
+}
+
+model ComunidadeComentario {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int      @map("usuario_id")
+  postId    Int      @map("post_id")
+  conteudo  String   @db.VarChar(1000)
+  criadoEm  DateTime @default(now()) @map("criado_em")
+
+  usuario User           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  post    ComunidadePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comunidade_comentario")
+}
+
+model Gamificacao {
+  id                      Int    @id @default(autoincrement())
+  usuarioId               Int    @unique @map("usuario_id")
+  xp                      Int    @default(0)
+  conquistasDesbloqueadas String @default("[]") @map("conquistas_desbloqueadas") @db.Text
+  historico               String @default("[]") @db.Text
+  totalLivros             Int    @default(0) @map("total_livros")
+  totalLidos              Int    @default(0) @map("total_lidos")
+  totalAvaliacoes         Int    @default(0) @map("total_avaliacoes")
+  totalFavoritos          Int    @default(0) @map("total_favoritos")
+  totalPosts              Int    @default(0) @map("total_posts")
+  totalAbandonados        Int    @default(0) @map("total_abandonados")
+  totalQueroLer           Int    @default(0) @map("total_quero_ler")
+  totalLendo              Int    @default(0) @map("total_lendo")
+
+  usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("gamificacao")
+}
