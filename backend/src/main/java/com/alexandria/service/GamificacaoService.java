@@ -1,5 +1,9 @@
 package com.alexandria.service;
 
+import com.alexandria.dto.gamificacao.ConquistaResponse;
+import com.alexandria.dto.gamificacao.EstatisticasResponse;
+import com.alexandria.dto.gamificacao.GamificacaoStatusResponse;
+import com.alexandria.dto.gamificacao.HistoricoItemResponse;
 import com.alexandria.exception.ResourceNotFoundException;
 import com.alexandria.model.Gamificacao;
 import com.alexandria.model.HistoricoItem;
@@ -10,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -98,9 +103,29 @@ public class GamificacaoService {
         salvarComConquistas(g);
     }
 
-    public Gamificacao consultar(Long usuarioId) {
-        return gamificacaoRepository.findByUsuarioId(usuarioId)
+    public GamificacaoStatusResponse consultarStatus(Long usuarioId) {
+        Gamificacao g = gamificacaoRepository.findByUsuarioId(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Dados de gamificação não encontrados."));
+
+        int nivel = g.getXp() / GamificacaoConstants.XP_POR_NIVEL + 1;
+        int xpParaProximoNivel = GamificacaoConstants.XP_POR_NIVEL - (g.getXp() % GamificacaoConstants.XP_POR_NIVEL);
+
+        List<ConquistaResponse> conquistas = GamificacaoConstants.CONQUISTAS.stream()
+                .map(a -> new ConquistaResponse(a.codigo(), a.nome(), a.descricao(),
+                        g.getConquistasDesbloqueadas().contains(a.codigo())))
+                .toList();
+
+        List<HistoricoItemResponse> historico = g.getHistorico().stream()
+                .map(h -> new HistoricoItemResponse(h.data(), h.tipo(), h.descricao(), h.xpGanho()))
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+        Collections.reverse(historico);
+
+        EstatisticasResponse estatisticas = new EstatisticasResponse(
+                g.getTotalLivros(), g.getTotalLidos(), g.getTotalAvaliacoes(), g.getTotalFavoritos(),
+                g.getTotalPosts(), g.getTotalAbandonados(), g.getTotalQueroLer(), g.getTotalLendo()
+        );
+
+        return new GamificacaoStatusResponse(g.getXp(), nivel, xpParaProximoNivel, conquistas, historico, estatisticas);
     }
 
     private Gamificacao obterOuCriar(Long usuarioId) {
