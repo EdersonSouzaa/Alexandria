@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: alexandria-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/alexandria}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: ${JPA_FORMAT_SQL:false}
+    open-in-view: false
+
+server:
+  port: ${PORT:8080}
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  jwt:
+    secret: ${JWT_SECRET:troque_por_uma_chave_forte_com_no_minimo_32_caracteres}
+    expiration-ms: 86400000
+  google-books:
+    api-key: ${GOOGLE_BOOKS_API_KEY:}
+    lang: ${GOOGLE_BOOKS_LANG:pt}
+    country: ${GOOGLE_BOOKS_COUNTRY:BR}
+    base-url: https://www.googleapis.com/books/v1
+
+logging:
+  level:
+    com.alexandria: INFO
