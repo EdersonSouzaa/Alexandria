@@ -3,6 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import OwlLogo from '../components/OwlLogo'
 import heroBookCover from '../assets/hero-book-cover.jpg'
+import capaVidasSecas from '../assets/shelf-vidas-secas.jpg'
+import capaIracema from '../assets/shelf-iracema.jpg'
+import capaCegueira from '../assets/shelf-cegueira.jpg'
+import capaCortico from '../assets/shelf-cortico.jpg'
+import capaOsMaias from '../assets/shelf-os-maias.jpg'
 import '../styles/landing.css'
 
 const estatisticas = [
@@ -12,11 +17,11 @@ const estatisticas = [
 ]
 
 const livrosDestaque = [
-  { titulo: 'Marés de Ferro', autor: 'Rodrigo Vasconcelos', cor: 'tan' },
-  { titulo: 'Cidade de Sal', autor: 'Ana Beatriz Prado', cor: 'green', badge: 'Novo' },
-  { titulo: 'Reino de Cinzas', autor: 'Luiza Monteiro', cor: 'blue' },
-  { titulo: 'A Sombra do Farol', autor: 'Camila Rezende', cor: 'red' },
-  { titulo: 'O Jardim de Vidro', autor: 'Helena Duarte', cor: 'brown' },
+  { titulo: 'Vidas Secas', autor: 'Graciliano Ramos', cor: 'tan', capa: capaVidasSecas },
+  { titulo: 'Iracema', autor: 'José de Alencar', cor: 'green', badge: 'Novo', capa: capaIracema },
+  { titulo: 'Ensaio sobre a Cegueira', autor: 'José Saramago', cor: 'blue', capa: capaCegueira },
+  { titulo: 'O Cortiço', autor: 'Aluísio Azevedo', cor: 'red', capa: capaCortico },
+  { titulo: 'Os Maias', autor: 'Eça de Queirós', cor: 'brown', capa: capaOsMaias },
 ]
 
 const recursos = [
@@ -283,7 +288,11 @@ export default function LandingPage() {
 
         <div className="home__shelf">
           {livrosDestaque.map((livro) => (
-            <div className={`home__spine home__spine--${livro.cor}`} key={livro.titulo}>
+            <div
+              className={`home__spine home__spine--${livro.cor}`}
+              key={livro.titulo}
+              style={{ '--spine-cover': `url(${livro.capa})` }}
+            >
               {livro.badge && <span className="home__spine-badge">{livro.badge}</span>}
               <span className="home__spine-title">{livro.titulo}</span>
               <span className="home__spine-author">{livro.autor}</span>
