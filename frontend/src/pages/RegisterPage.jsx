@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Input from '../components/Input'
 import Button from '../components/Button'
+import AuthLayout from '../components/AuthLayout'
 import '../styles/auth.css'
 
 export default function RegisterPage() {
@@ -30,50 +31,48 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card card">
-        <span className="kicker">Comece agora</span>
-        <h1>Criar sua conta</h1>
+    <AuthLayout active="register">
+      {erro && <div className="auth-card__message auth-card__message--error">{erro}</div>}
 
-        {erro && <div className="auth-card__message auth-card__message--error">{erro}</div>}
+      <form onSubmit={handleSubmit}>
+        <Input
+          id="name"
+          label="Nome"
+          placeholder="Seu nome"
+          autoComplete="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <Input
+          id="email"
+          label="E-mail"
+          type="email"
+          placeholder="voce@email.com"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          id="password"
+          label="Senha"
+          type="password"
+          placeholder="Crie uma senha"
+          autoComplete="new-password"
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <Button type="submit" loading={carregando}>
+          Criar conta
+        </Button>
+      </form>
 
-        <form onSubmit={handleSubmit}>
-          <Input
-            id="name"
-            label="Nome"
-            autoComplete="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <Input
-            id="email"
-            label="E-mail"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Input
-            id="password"
-            label="Senha"
-            type="password"
-            autoComplete="new-password"
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <Button type="submit" loading={carregando}>
-            Criar conta
-          </Button>
-        </form>
-
-        <p className="auth-card__footer">
-          Já tem conta? <Link to="/login">Entrar</Link>
-        </p>
-      </div>
-    </div>
+      <p className="auth-split__footer">
+        Já tem conta? <Link to="/login">Entrar</Link>
+      </p>
+    </AuthLayout>
   )
 }

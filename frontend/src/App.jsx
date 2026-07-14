@@ -3,13 +3,15 @@ import Navbar from './components/Navbar'
 import XPToast from './components/XPToast'
 import AppRoutes from './routes/AppRoutes'
 
+const FULL_BLEED_ROUTES = ['/', '/login', '/cadastro']
+
 function App() {
   const { pathname } = useLocation()
-  const isHome = pathname === '/'
+  const hideNavbar = FULL_BLEED_ROUTES.includes(pathname)
 
   return (
     <>
-      {!isHome && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <AppRoutes />
       <XPToast />
     </>
