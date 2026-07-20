@@ -236,7 +236,7 @@ npm run build
 
 - `DATABASE_URL`
 - `JWT_SECRET`
-- `FRONTEND_URL`
+- `FRONTEND_URL` (aceita múltiplas origens separadas por vírgula, ex.: `https://seu-app.vercel.app,https://seu-app-git-main-time.vercel.app`)
 - `GOOGLE_BOOKS_API_KEY`
 - `GOOGLE_BOOKS_LANG`
 - `GOOGLE_BOOKS_COUNTRY`
