@@ -415,26 +415,12 @@
 
 .home__cover-card--main {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 4px;
-  padding: 22px;
-  background-color: #6b2b23;
+  background-color: #4d1e18;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: var(--home-shadow-lg);
   transform: rotate(2deg);
-}
-
-.home__cover-card-title {
-  font-family: var(--home-serif);
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: #fff;
-}
-
-.home__cover-card-author {
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.72);
 }
 
 /* ===== Section heading (shared) ===== */
@@ -550,23 +536,23 @@
 }
 
 .home__spine--tan {
-  background-image: linear-gradient(160deg, #d1a066, #b57c42);
+  background-image: linear-gradient(0deg, rgba(20, 12, 6, 0.75) 0%, rgba(20, 12, 6, 0) 55%), var(--spine-cover);
 }
 
 .home__spine--green {
-  background-image: linear-gradient(160deg, #3f5647, #2b3d31);
+  background-image: linear-gradient(0deg, rgba(8, 14, 10, 0.75) 0%, rgba(8, 14, 10, 0) 55%), var(--spine-cover);
 }
 
 .home__spine--blue {
-  background-image: linear-gradient(160deg, #566d87, #3d4f63);
+  background-image: linear-gradient(0deg, rgba(8, 12, 16, 0.75) 0%, rgba(8, 12, 16, 0) 55%), var(--spine-cover);
 }
 
 .home__spine--red {
-  background-image: linear-gradient(160deg, #9c4437, #7a3128);
+  background-image: linear-gradient(0deg, rgba(16, 8, 6, 0.75) 0%, rgba(16, 8, 6, 0) 55%), var(--spine-cover);
 }
 
 .home__spine--brown {
-  background-image: linear-gradient(160deg, #4a382a, #30231a);
+  background-image: linear-gradient(0deg, rgba(10, 7, 5, 0.75) 0%, rgba(10, 7, 5, 0) 55%), var(--spine-cover);
 }
 
 .home__shelf-bar {

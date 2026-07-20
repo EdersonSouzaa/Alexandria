@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import OwlLogo from '../components/OwlLogo'
+import heroBookCover from '../assets/hero-book-cover.jpg'
+import capaCemAnos from '../assets/shelf-cem-anos-de-solidao.jpg'
+import capaGrandeSertao from '../assets/shelf-grande-sertao-veredas.jpg'
+import capa1984 from '../assets/shelf-1984.jpg'
+import capaDomQuixote from '../assets/shelf-dom-quixote.jpg'
+import capaDivinaComedia from '../assets/shelf-divina-comedia.jpg'
 import '../styles/landing.css'
 
 const estatisticas = [
@@ -10,14 +16,12 @@ const estatisticas = [
   { valor: '96 mil+', rotulo: 'resenhas escritas' },
 ]
 
-const livroDestaque = { titulo: 'Dom Casmurro', autor: 'Machado de Assis' }
-
 const livrosDestaque = [
-  { titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', cor: 'tan' },
-  { titulo: 'Grande Sertão: Veredas', autor: 'Guimarães Rosa', cor: 'green' },
-  { titulo: '1984', autor: 'George Orwell', cor: 'blue' },
-  { titulo: 'Dom Quixote', autor: 'Miguel de Cervantes', cor: 'red' },
-  { titulo: 'A Divina Comédia', autor: 'Dante Alighieri', cor: 'brown' },
+  { titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', cor: 'tan', capa: capaCemAnos },
+  { titulo: 'Grande Sertão: Veredas', autor: 'Guimarães Rosa', cor: 'green', capa: capaGrandeSertao },
+  { titulo: '1984', autor: 'George Orwell', cor: 'blue', capa: capa1984 },
+  { titulo: 'Dom Quixote', autor: 'Miguel de Cervantes', cor: 'red', capa: capaDomQuixote },
+  { titulo: 'A Divina Comédia', autor: 'Dante Alighieri', cor: 'brown', capa: capaDivinaComedia },
 ]
 
 const recursos = [
@@ -262,10 +266,12 @@ export default function LandingPage() {
 
           <div className="home__hero-visual" aria-hidden="true">
             <div className="home__cover-stack">
-              <div className="home__cover-card home__cover-card--main">
-                <span className="home__cover-card-title">{livroDestaque.titulo}</span>
-                <span className="home__cover-card-author">{livroDestaque.autor}</span>
-              </div>
+              <div
+                className="home__cover-card home__cover-card--main"
+                style={{ backgroundImage: `url(${heroBookCover})` }}
+                role="img"
+                aria-label="Capa do livro Dom Casmurro, de Machado de Assis"
+              />
             </div>
           </div>
         </div>
@@ -282,7 +288,11 @@ export default function LandingPage() {
 
         <div className="home__shelf">
           {livrosDestaque.map((livro) => (
-            <div className={`home__spine home__spine--${livro.cor}`} key={livro.titulo}>
+            <div
+              className={`home__spine home__spine--${livro.cor}`}
+              key={livro.titulo}
+              style={{ '--spine-cover': `url(${livro.capa})` }}
+            >
               <span className="home__spine-title">{livro.titulo}</span>
               <span className="home__spine-author">{livro.autor}</span>
             </div>
