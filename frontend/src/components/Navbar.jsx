@@ -4,6 +4,7 @@ import OwlLogo from './OwlLogo'
 import './Navbar.css'
 
 const linksAutenticado = [
+  { to: '/inicio', label: 'Início' },
   { to: '/explorar', label: 'Explorar' },
   { to: '/biblioteca', label: 'Biblioteca' },
   { to: '/avaliacoes', label: 'Avaliações' },
@@ -23,7 +24,7 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <Link to={user ? '/explorar' : '/'} className="navbar__brand">
+        <Link to={user ? '/inicio' : '/'} className="navbar__brand">
           <OwlLogo size={32} />
           <span>Alexandria</span>
         </Link>

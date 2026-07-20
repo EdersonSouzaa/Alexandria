@@ -22,7 +22,7 @@ export default function LoginPage() {
     setCarregando(true)
     try {
       await login(email, password)
-      const destino = location.state?.from?.pathname ?? '/explorar'
+      const destino = location.state?.from?.pathname ?? '/inicio'
       navigate(destino, { replace: true })
     } catch (error) {
       setErro(error.response?.data?.mensagem ?? 'Não foi possível entrar. Verifique suas credenciais.')

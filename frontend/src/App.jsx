@@ -3,7 +3,7 @@ import Navbar from './components/Navbar'
 import XPToast from './components/XPToast'
 import AppRoutes from './routes/AppRoutes'
 
-const FULL_BLEED_ROUTES = ['/', '/login', '/cadastro']
+const FULL_BLEED_ROUTES = ['/', '/login', '/cadastro', '/inicio']
 
 function App() {
   const { pathname } = useLocation()

@@ -22,7 +22,7 @@ export default function RegisterPage() {
     setCarregando(true)
     try {
       await register(name, email, password)
-      navigate('/explorar', { replace: true })
+      navigate('/inicio', { replace: true })
     } catch (error) {
       setErro(error.response?.data?.mensagem ?? 'Não foi possível criar sua conta.')
     } finally {

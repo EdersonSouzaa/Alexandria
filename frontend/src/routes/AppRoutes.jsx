@@ -5,6 +5,7 @@ import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
 import ForgotPasswordPage from '../pages/ForgotPasswordPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
+import InicioPage from '../pages/InicioPage'
 import ExplorarPage from '../pages/ExplorarPage'
 import LivroDetalhePage from '../pages/LivroDetalhePage'
 import MinhaBibliotecaPage from '../pages/MinhaBibliotecaPage'
@@ -24,6 +25,7 @@ export default function AppRoutes() {
       <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/inicio" element={<InicioPage />} />
         <Route path="/explorar" element={<ExplorarPage />} />
         <Route path="/livros/:id" element={<LivroDetalhePage />} />
         <Route path="/biblioteca" element={<MinhaBibliotecaPage />} />
