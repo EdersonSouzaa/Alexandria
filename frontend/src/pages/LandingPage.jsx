@@ -10,14 +10,14 @@ const estatisticas = [
   { valor: '96 mil+', rotulo: 'resenhas escritas' },
 ]
 
-const livroDestaque = { titulo: 'Ecos de Alexandria', autor: 'Nuno Barreto' }
+const livroDestaque = { titulo: 'Dom Casmurro', autor: 'Machado de Assis' }
 
 const livrosDestaque = [
-  { titulo: 'Marés de Ferro', autor: 'Rodrigo Vasconcelos', cor: 'tan' },
-  { titulo: 'Cidade de Sal', autor: 'Ana Beatriz Prado', cor: 'green' },
-  { titulo: 'Reino de Cinzas', autor: 'Luiza Monteiro', cor: 'blue' },
-  { titulo: 'A Sombra do Farol', autor: 'Camila Rezende', cor: 'red' },
-  { titulo: 'O Jardim de Vidro', autor: 'Helena Duarte', cor: 'brown' },
+  { titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', cor: 'tan' },
+  { titulo: 'Grande Sertão: Veredas', autor: 'Guimarães Rosa', cor: 'green' },
+  { titulo: '1984', autor: 'George Orwell', cor: 'blue' },
+  { titulo: 'Dom Quixote', autor: 'Miguel de Cervantes', cor: 'red' },
+  { titulo: 'A Divina Comédia', autor: 'Dante Alighieri', cor: 'brown' },
 ]
 
 const recursos = [
