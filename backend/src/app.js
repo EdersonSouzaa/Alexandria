@@ -22,11 +22,7 @@ const allowedOrigins = (process.env.FRONTEND_URL || '')
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-      } else {
-        callback(new Error(`Origem não permitida pelo CORS: ${origin}`))
-      }
+      callback(null, !origin || allowedOrigins.includes(origin))
     },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type'],
