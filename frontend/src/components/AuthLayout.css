@@ -138,6 +138,15 @@
   border-color: var(--auth-gold);
 }
 
+.auth-split__card .input:-webkit-autofill,
+.auth-split__card .input:-webkit-autofill:hover,
+.auth-split__card .input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--auth-text-dark);
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  box-shadow: 0 0 0 1000px #fff inset;
+  caret-color: var(--auth-text-dark);
+}
+
 .auth-split__card .btn-primary {
   width: 100%;
   margin-top: 8px;

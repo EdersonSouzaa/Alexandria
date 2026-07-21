@@ -19,3 +19,13 @@
   outline: none;
   border-color: var(--cyan);
 }
+
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--light-slate);
+  -webkit-box-shadow: 0 0 0 1000px var(--light-navy) inset;
+  box-shadow: 0 0 0 1000px var(--light-navy) inset;
+  caret-color: var(--light-slate);
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
