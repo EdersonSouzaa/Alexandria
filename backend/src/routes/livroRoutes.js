@@ -7,6 +7,13 @@ const router = express.Router()
 router.use(requireAuth)
 
 router.get(
+  '/tendencias',
+  asyncHandler(async (req, res) => {
+    res.json(await livroService.tendencias())
+  }),
+)
+
+router.get(
   '/buscar',
   asyncHandler(async (req, res) => {
     const { termo, categoria, ordenar = 'relevancia', pagina = '0', tamanhoPagina = '20', qualidadeMinima = 'true' } =
@@ -25,7 +32,7 @@ router.get(
 )
 
 router.get(
-  '/google/:id',
+  '/openlibrary/:id',
   asyncHandler(async (req, res) => {
     res.json(await livroService.detalhar(req.params.id))
   }),

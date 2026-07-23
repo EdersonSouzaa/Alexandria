@@ -49,6 +49,7 @@ export default function ExplorarPage() {
   const [ordenar, setOrdenar] = useState('relevancia')
   const [pagina, setPagina] = useState(0)
   const [resultado, setResultado] = useState(null)
+  const [modoResultado, setModoResultado] = useState('tendencias')
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
   const [adicionando, setAdicionando] = useState({})
@@ -59,16 +60,25 @@ export default function ExplorarPage() {
     async (paginaAlvo = 0) => {
       setCarregando(true)
       setErro('')
+      const semFiltros = !termo.trim() && !categoria
       try {
-        const dados = await livroService.buscar({
-          termo,
-          categoria: categoria || undefined,
-          ordenar,
-          pagina: paginaAlvo,
-          tamanhoPagina,
-        })
-        setResultado(dados)
-        setPagina(paginaAlvo)
+        if (semFiltros) {
+          const dados = await livroService.tendencias()
+          setResultado(dados)
+          setModoResultado('tendencias')
+          setPagina(0)
+        } else {
+          const dados = await livroService.buscar({
+            termo,
+            categoria: categoria || undefined,
+            ordenar,
+            pagina: paginaAlvo,
+            tamanhoPagina,
+          })
+          setResultado(dados)
+          setModoResultado('busca')
+          setPagina(paginaAlvo)
+        }
       } catch {
         setErro('Não foi possível buscar livros agora. Tente novamente em instantes.')
       } finally {
@@ -103,7 +113,7 @@ export default function ExplorarPage() {
     }
   }
 
-  const totalPaginas = resultado ? Math.ceil(resultado.totalResultados / tamanhoPagina) : 0
+  const totalPaginas = resultado && modoResultado === 'busca' ? Math.ceil(resultado.totalResultados / tamanhoPagina) : 0
 
   return (
     <div className="dash">
@@ -119,9 +129,11 @@ export default function ExplorarPage() {
             <h1>Explorar</h1>
             <p>
               {resultado
-                ? `${resultado.totalResultados} ${resultado.totalResultados === 1 ? 'livro encontrado' : 'livros encontrados'}`
+                ? modoResultado === 'tendencias'
+                  ? `${resultado.livros.length} livros em alta na Open Library`
+                  : `${resultado.totalResultados} ${resultado.totalResultados === 1 ? 'livro encontrado' : 'livros encontrados'}`
                 : 'Encontre seu próximo livro'}
-              {termo && (
+              {modoResultado === 'busca' && termo && (
                 <>
                   {' '}
                   para <em>&quot;{termo}&quot;</em>
@@ -216,7 +228,9 @@ export default function ExplorarPage() {
                 )
               })}
             </div>
-            <Pagination pagina={pagina} totalPaginas={totalPaginas} onChange={buscar} />
+            {modoResultado === 'busca' && (
+              <Pagination pagina={pagina} totalPaginas={totalPaginas} onChange={buscar} />
+            )}
           </>
         )}
       </DashboardShell>

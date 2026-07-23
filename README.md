@@ -4,7 +4,7 @@ Plataforma web para organizar leituras, montar uma biblioteca pessoal digital e 
 
 ## Sobre o projeto
 
-O ALEXANDRIA é uma aplicação full-stack (React + Node.js) que funciona como um "Goodreads" pessoal: o usuário pesquisa livros através da Google Books API, salva os que quiser em uma biblioteca própria, controla o status de leitura de cada obra, escreve avaliações com nota e resenha, participa de uma comunidade interna de leitores e evolui em um sistema de gamificação (XP, níveis e conquistas) conforme usa o app.
+O ALEXANDRIA é uma aplicação full-stack (React + Node.js) que funciona como um "Goodreads" pessoal: o usuário pesquisa livros através da Open Library API, salva os que quiser em uma biblioteca própria, controla o status de leitura de cada obra, escreve avaliações com nota e resenha, participa de uma comunidade interna de leitores e evolui em um sistema de gamificação (XP, níveis e conquistas) conforme usa o app.
 
 Todo o produto — interface, textos e domínio de dados — é em português (pt-BR), com foco em um público leitor brasileiro. O projeto está estruturado como um monorepo com duas aplicações independentes, publicadas separadamente na Railway:
 
@@ -23,8 +23,9 @@ Todo o produto — interface, textos e domínio de dados — é em português (p
 - Isolamento total de dados entre contas diferentes (cada usuário só acessa seus próprios registros).
 
 ### Descoberta e catálogo de livros
-- Pesquisa de livros usando a Google Books API, intermediada pelo backend (filtros por termo, categoria, ordenação e qualidade do resultado, com paginação).
-- Cache de buscas e detalhes de livros (em memória, TTL de 60 min) para reduzir chamadas repetidas à API do Google.
+- Lista inicial com os 100 livros em alta (trending) da Open Library ao abrir a tela Explorar, sem precisar buscar nada.
+- Pesquisa de livros usando a Open Library API, intermediada pelo backend (filtros por termo, categoria, ordenação e qualidade do resultado, com paginação).
+- Cache de buscas e detalhes de livros (em memória, TTL de 60 min) para reduzir chamadas repetidas à API da Open Library.
 - Tela de detalhes do livro com capa, autor, descrição, editora, data de publicação e número de páginas.
 - Página inicial (landing page) pública com busca rápida, cards de destaque e apresentação do produto.
 
@@ -89,10 +90,10 @@ Outros pontos do design:
 - Autenticação **JWT stateless** via middleware customizado (`requireAuth`), tokens assinados com `jsonwebtoken`, senhas com `bcryptjs`.
 - **Prisma ORM** sobre **PostgreSQL** — schema declarativo (`prisma/schema.prisma`) e migrações versionadas (`prisma/migrations/`).
 - Cache em memória com TTL (60 min) para buscas e detalhes de livros, implementado à mão (`src/lib/cache.js`).
-- **Google Books API** como única integração externa de dados (idioma `pt`, país `BR`), consumida via `fetch` nativo do Node.
+- **Open Library API** (openlibrary.org) como única integração externa de dados — pública, sem chave de API, identificada por `User-Agent` —, consumida via `fetch` nativo do Node.
 - **Zod** para validação de DTOs de requisição.
 - **Test runner nativo do Node** (`node --test`) + **Supertest** para testes de rota.
-- Sem filas/mensageria, sem jobs agendados, sem provedor de e-mail ou pagamento — a integração externa é só o Google Books.
+- Sem filas/mensageria, sem jobs agendados, sem provedor de e-mail ou pagamento — a integração externa é só a Open Library.
 
 ### Deploy
 - **Railway** hospedando frontend, backend e um PostgreSQL gerenciado.
@@ -105,7 +106,7 @@ API REST em JSON sob o prefixo `/api`, organizada por router de domínio (`src/r
 | Router | Rota base | Responsabilidade |
 |---|---|---|
 | `authRoutes` | `/api/auth` | Registro, login, perfil, esqueci/redefinir senha |
-| `livroRoutes` | `/api/livros` | Busca (`/buscar`) e detalhe (`/google/:id`) via Google Books |
+| `livroRoutes` | `/api/livros` | Em alta (`/tendencias`), busca (`/buscar`) e detalhe (`/openlibrary/:id`) via Open Library |
 | `bibliotecaRoutes` | `/api/biblioteca` | Adicionar/listar/remover livros, status de leitura, favoritos |
 | `avaliacaoRoutes` | `/api/avaliacoes` | CRUD de avaliações (nota + resenha) + export CSV |
 | `comunidadeRoutes` | `/api/comunidade/posts` | Posts, curtidas, comentários |
@@ -119,7 +120,7 @@ Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `
 | Tabela | Principais campos | Observações |
 |---|---|---|
 | `users` | email (único), name, password (hash bcrypt), reset_password_token, reset_password_expiry | Entidade central de conta/autenticação |
-| `livros` | titulo, autor, descricao, capa, identificador_externo (id do Google Books), editora, data_publicacao, categoria, numero_paginas | Cache local dos livros vindos do Google Books |
+| `livros` | titulo, autor, descricao, capa, identificador_externo (work key da Open Library), editora, data_publicacao, categoria, numero_paginas | Cache local dos livros vindos da Open Library |
 | `biblioteca` | usuario_id, livro_id, status_leitura (enum), favorito | Único por (usuário, livro) |
 | `avaliacoes` | usuario_id, livro_id, nota (1–5), resenha | Único por (usuário, livro) |
 | `comunidade_posts` | usuario_id, livro_id, avaliacao_id, conteudo | Post do feed (gerado a partir de uma avaliação) |
@@ -173,9 +174,6 @@ PORT=8080
 DATABASE_URL=postgresql://postgres:sua_senha_local@localhost:5432/alexandria_web?schema=public
 JWT_SECRET=troque_por_uma_chave_forte_com_no_minimo_32_caracteres
 FRONTEND_URL=http://localhost:5173
-GOOGLE_BOOKS_API_KEY=SUA_CHAVE_AQUI
-GOOGLE_BOOKS_LANG=pt
-GOOGLE_BOOKS_COUNTRY=BR
 ```
 
 > Se sua senha do Postgres tiver caracteres especiais (`@`, `!`, `#`...), faça o *URL encode* deles na `DATABASE_URL` (ex.: `@` vira `%40`).
@@ -237,9 +235,6 @@ npm run build
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `FRONTEND_URL` (aceita múltiplas origens separadas por vírgula, ex.: `https://seu-app.vercel.app,https://seu-app-git-main-time.vercel.app`)
-- `GOOGLE_BOOKS_API_KEY`
-- `GOOGLE_BOOKS_LANG`
-- `GOOGLE_BOOKS_COUNTRY`
 
 O comando de start (`npm start`) roda `prisma migrate deploy` antes de subir o servidor, aplicando migrações pendentes automaticamente no deploy.
 

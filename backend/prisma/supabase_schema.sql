@@ -50,7 +50,7 @@ create unique index if not exists "users_email_key" on "users"("email");
 create unique index if not exists "users_reset_password_token_key" on "users"("reset_password_token");
 
 -- ---------------------------------------------------------------------
--- Tabela: livros — cache local dos livros vindos da Google Books API
+-- Tabela: livros — cache local dos livros vindos da Open Library API
 -- ---------------------------------------------------------------------
 create table if not exists "livros" (
     "id" serial not null,

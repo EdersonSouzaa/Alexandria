@@ -1,19 +1,23 @@
 const prisma = require('../lib/prisma')
-const googleBooksService = require('./googleBooksService')
+const openLibraryService = require('./openLibraryService')
 
 async function buscar(termo, categoria, ordenar, pagina, tamanhoPagina, qualidadeMinima) {
-  return googleBooksService.buscar(termo, categoria, ordenar, pagina, tamanhoPagina, qualidadeMinima)
+  return openLibraryService.buscar(termo, categoria, ordenar, pagina, tamanhoPagina, qualidadeMinima)
 }
 
-async function detalhar(googleId) {
-  return googleBooksService.detalhar(googleId)
+async function tendencias() {
+  return openLibraryService.tendencias()
 }
 
-async function obterOuCriarLivroLocal(googleId) {
-  const existente = await prisma.livro.findUnique({ where: { identificadorExterno: googleId } })
+async function detalhar(identificadorExterno) {
+  return openLibraryService.detalhar(identificadorExterno)
+}
+
+async function obterOuCriarLivroLocal(identificadorExterno) {
+  const existente = await prisma.livro.findUnique({ where: { identificadorExterno } })
   if (existente) return existente
 
-  const detalhe = await googleBooksService.detalhar(googleId)
+  const detalhe = await openLibraryService.detalhar(identificadorExterno)
   return prisma.livro.create({
     data: {
       identificadorExterno: detalhe.identificadorExterno,
@@ -29,4 +33,4 @@ async function obterOuCriarLivroLocal(googleId) {
   })
 }
 
-module.exports = { buscar, detalhar, obterOuCriarLivroLocal }
+module.exports = { buscar, detalhar, tendencias, obterOuCriarLivroLocal }
