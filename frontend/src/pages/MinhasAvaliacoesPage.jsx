@@ -1,20 +1,97 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { avaliacaoService } from '../services/avaliacaoService'
 import RatingStars from '../components/RatingStars'
 import Input from '../components/Input'
 import Button from '../components/Button'
-import LoadingSpinner from '../components/LoadingSpinner'
+import DashboardShell from '../components/DashboardShell'
+import '../styles/dashboard.css'
 import '../styles/avaliacoes.css'
 
+function IconEstrela() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.8L12 2.5z" />
+    </svg>
+  )
+}
+
+function IconResenha() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M5 4h11l3 3v13H5V4z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path d="M9 10h6M9 13h6M9 16h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconDownload() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 4v11m0 0l-4-4m4 4l4-4M5 18h14"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconCalendario() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M4 9.5h16M8 3v3M16 3v3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconEditar() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 20h4L18 10l-4-4L4 16v4zM14 4.5L19.5 10"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconLixo() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export default function MinhasAvaliacoesPage() {
+  const navigate = useNavigate()
+
   const [avaliacoes, setAvaliacoes] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [editandoId, setEditandoId] = useState(null)
   const [notaEdicao, setNotaEdicao] = useState(0)
   const [resenhaEdicao, setResenhaEdicao] = useState('')
+  const [termoBusca, setTermoBusca] = useState('')
 
-  async function carregar() {
+  const carregar = useCallback(async () => {
     setCarregando(true)
     try {
       const dados = await avaliacaoService.listar()
@@ -22,11 +99,16 @@ export default function MinhasAvaliacoesPage() {
     } finally {
       setCarregando(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     carregar()
-  }, [])
+  }, [carregar])
+
+  function handleBuscar(event) {
+    event.preventDefault()
+    navigate(`/explorar?termo=${encodeURIComponent(termoBusca)}`)
+  }
 
   function iniciarEdicao(avaliacao) {
     setEditandoId(avaliacao.id)
@@ -55,71 +137,173 @@ export default function MinhasAvaliacoesPage() {
     URL.revokeObjectURL(url)
   }
 
+  const estatisticas = useMemo(() => {
+    if (avaliacoes.length === 0) return { total: 0, media: 0, palavras: 0 }
+    const total = avaliacoes.length
+    const somaNotas = avaliacoes.reduce((soma, a) => soma + a.nota, 0)
+    const palavras = avaliacoes.reduce(
+      (soma, a) => soma + (a.resenha?.trim() ? a.resenha.trim().split(/\s+/).length : 0),
+      0,
+    )
+    return { total, media: somaNotas / total, palavras }
+  }, [avaliacoes])
+
+  if (carregando && avaliacoes.length === 0) {
+    return (
+      <div className="dash">
+        <div className="dash__loading">
+          <span className="dash__spinner" />
+          <span>Carregando suas avaliações…</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="page container">
-      <div className="row-between">
-        <div>
-          <span className="kicker">Minhas avaliações</span>
-          <h1>O que você tem lido</h1>
-        </div>
-        {avaliacoes.length > 0 && (
-          <Button variant="secondary" onClick={exportarCsv}>
-            Exportar CSV
-          </Button>
-        )}
-      </div>
-
-      {carregando && <LoadingSpinner label="Carregando suas avaliações…" />}
-
-      {!carregando && avaliacoes.length === 0 && (
-        <div className="empty-state">
-          <p>Você ainda não avaliou nenhum livro.</p>
-        </div>
-      )}
-
-      <div className="stack">
-        {avaliacoes.map((avaliacao) => (
-          <div className="card avaliacao-item" key={avaliacao.id}>
-            <div className="row-between">
-              <Link to={`/livros/${avaliacao.livro.identificadorExterno}`}>
-                <strong>{avaliacao.livro.titulo}</strong>
-              </Link>
-              <div className="row">
-                <button className="avaliacao-item__link" onClick={() => iniciarEdicao(avaliacao)}>
-                  Editar
-                </button>
-                <button className="avaliacao-item__link avaliacao-item__link--danger" onClick={() => remover(avaliacao.id)}>
-                  Excluir
-                </button>
-              </div>
-            </div>
-
-            {editandoId === avaliacao.id ? (
-              <div className="avaliacao-item__edicao">
-                <RatingStars value={notaEdicao} onChange={setNotaEdicao} />
-                <Input
-                  as="textarea"
-                  rows={4}
-                  maxLength={5000}
-                  value={resenhaEdicao}
-                  onChange={(e) => setResenhaEdicao(e.target.value)}
-                />
-                <div className="row">
-                  <Button onClick={() => salvarEdicao(avaliacao.id)}>Salvar</Button>
-                  <Button variant="secondary" onClick={() => setEditandoId(null)}>
-                    Cancelar
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <RatingStars value={avaliacao.nota} readOnly />
-                <p>{avaliacao.resenha}</p>
-              </>
-            )}
+    <div className="dash">
+      <DashboardShell
+        active="/avaliacoes"
+        searchValue={termoBusca}
+        onSearchChange={setTermoBusca}
+        onSearchSubmit={handleBuscar}
+        searchPlaceholder="Buscar na sua biblioteca…"
+      >
+        <div className="dash__page-head">
+          <div>
+            <h1>Minhas avaliações</h1>
+            <p>O que você tem lido e o que achou disso.</p>
           </div>
-        ))}
-      </div>
+          <div className="dash__filters">
+            {avaliacoes.length > 0 && (
+              <button type="button" className="dash__filter-toggle" onClick={exportarCsv}>
+                <IconDownload /> Exportar CSV
+              </button>
+            )}
+            <Link to="/explorar" className="dash__filter-toggle dash__filter-toggle--active">
+              <IconEstrela width={14} height={14} /> Avaliar um livro
+            </Link>
+          </div>
+        </div>
+
+        {avaliacoes.length > 0 && (
+          <div className="dash__stats">
+            <div className="dash__stat-tile">
+              <span className="dash__stat-tile-icon">
+                <IconResenha />
+              </span>
+              <span>
+                <strong>{estatisticas.total}</strong>
+                <span>Avaliações</span>
+              </span>
+            </div>
+            <div className="dash__stat-tile">
+              <span className="dash__stat-tile-icon">
+                <IconEstrela />
+              </span>
+              <span>
+                <strong>{estatisticas.media.toFixed(1)}</strong>
+                <span>Nota média</span>
+              </span>
+            </div>
+            <div className="dash__stat-tile">
+              <span className="dash__stat-tile-icon">
+                <IconEditar />
+              </span>
+              <span>
+                <strong>{estatisticas.palavras.toLocaleString('pt-BR')}</strong>
+                <span>Palavras escritas</span>
+              </span>
+            </div>
+          </div>
+        )}
+
+        {avaliacoes.length === 0 ? (
+          <div className="dash__empty">
+            Você ainda não avaliou nenhum livro. <Link to="/explorar">Explore o catálogo</Link> e escreva sua primeira
+            resenha.
+          </div>
+        ) : (
+          <div className="dash__reviews">
+            {avaliacoes.map((avaliacao) => {
+              const editando = editandoId === avaliacao.id
+              const detalheUrl = `/livros/${avaliacao.livro.identificadorExterno}`
+              return (
+                <article className="dash__review" key={avaliacao.id}>
+                  <div className="dash__review-cover">
+                    <Link to={detalheUrl}>
+                      {avaliacao.livro.capa ? (
+                        <img src={avaliacao.livro.capa} alt={`Capa de ${avaliacao.livro.titulo}`} loading="lazy" />
+                      ) : (
+                        <span className="dash__book-placeholder">{avaliacao.livro.titulo?.[0]}</span>
+                      )}
+                    </Link>
+                  </div>
+
+                  <div className="dash__review-body">
+                    <div className="dash__review-head">
+                      <div>
+                        <h2>
+                          <Link to={detalheUrl}>{avaliacao.livro.titulo}</Link>
+                        </h2>
+                        {avaliacao.livro.autor && <p className="dash__review-author">{avaliacao.livro.autor}</p>}
+                      </div>
+                      {!editando && <RatingStars value={avaliacao.nota} readOnly />}
+                    </div>
+
+                    {editando ? (
+                      <div className="dash__review-edit">
+                        <RatingStars value={notaEdicao} onChange={setNotaEdicao} />
+                        <Input
+                          as="textarea"
+                          rows={4}
+                          maxLength={5000}
+                          value={resenhaEdicao}
+                          onChange={(e) => setResenhaEdicao(e.target.value)}
+                        />
+                        <div className="dash__review-edit-actions">
+                          <Button onClick={() => salvarEdicao(avaliacao.id)}>Salvar</Button>
+                          <Button variant="secondary" onClick={() => setEditandoId(null)}>
+                            Cancelar
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="dash__review-quote">
+                          <p>{avaliacao.resenha}</p>
+                        </div>
+                        <div className="dash__review-foot">
+                          <div className="dash__review-meta">
+                            <span>
+                              <IconCalendario /> {new Date(avaliacao.criadoEm).toLocaleDateString('pt-BR')}
+                            </span>
+                            {avaliacao.livro.categoria && (
+                              <span className="dash__book-tag">{avaliacao.livro.categoria}</span>
+                            )}
+                          </div>
+                          <div className="dash__review-actions">
+                            <button type="button" onClick={() => iniciarEdicao(avaliacao)} aria-label="Editar avaliação">
+                              <IconEditar />
+                            </button>
+                            <button
+                              type="button"
+                              className="dash__review-actions-danger"
+                              onClick={() => remover(avaliacao.id)}
+                              aria-label="Excluir avaliação"
+                            >
+                              <IconLixo />
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </DashboardShell>
     </div>
   )
 }

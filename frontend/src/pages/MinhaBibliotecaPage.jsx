@@ -6,7 +6,6 @@ import DashboardShell from '../components/DashboardShell'
 import { IconEstrela } from '../components/DashboardIcons'
 import '../styles/dashboard.css'
 import '../styles/book-grid.css'
-import '../styles/biblioteca.css'
 
 const STATUS_OPCOES = [
   { valor: 'QUERO_LER', label: 'Quero ler' },
@@ -204,9 +203,9 @@ export default function MinhaBibliotecaPage() {
           </section>
         )}
 
-        <div className="dash__lib-stats" style={{ marginTop: destaque ? 32 : 8 }}>
-          <div className="dash__lib-stat">
-            <span className="dash__lib-stat-icon">
+        <div className="dash__stats" style={{ marginTop: destaque ? 32 : 8 }}>
+          <div className="dash__stat-tile">
+            <span className="dash__stat-tile-icon">
               <IconBookmark />
             </span>
             <span>
@@ -214,8 +213,8 @@ export default function MinhaBibliotecaPage() {
               <span>Quero ler</span>
             </span>
           </div>
-          <div className="dash__lib-stat">
-            <span className="dash__lib-stat-icon">
+          <div className="dash__stat-tile">
+            <span className="dash__stat-tile-icon">
               <IconLivroAberto />
             </span>
             <span>
@@ -223,8 +222,8 @@ export default function MinhaBibliotecaPage() {
               <span>Lendo</span>
             </span>
           </div>
-          <div className="dash__lib-stat">
-            <span className="dash__lib-stat-icon">
+          <div className="dash__stat-tile">
+            <span className="dash__stat-tile-icon">
               <IconCheckCircle />
             </span>
             <span>
@@ -232,8 +231,8 @@ export default function MinhaBibliotecaPage() {
               <span>Lidos</span>
             </span>
           </div>
-          <div className="dash__lib-stat">
-            <span className="dash__lib-stat-icon">
+          <div className="dash__stat-tile">
+            <span className="dash__stat-tile-icon">
               <IconXCircle />
             </span>
             <span>
@@ -241,8 +240,8 @@ export default function MinhaBibliotecaPage() {
               <span>Abandonados</span>
             </span>
           </div>
-          <div className="dash__lib-stat">
-            <span className="dash__lib-stat-icon">
+          <div className="dash__stat-tile">
+            <span className="dash__stat-tile-icon">
               <IconEstrela />
             </span>
             <span>
