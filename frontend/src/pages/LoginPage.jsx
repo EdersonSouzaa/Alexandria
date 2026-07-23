@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import AuthLayout from '../components/AuthLayout'
+import { IconMail, IconChave, IconOlho, IconOlhoFechado } from '../components/AuthIcons'
 import '../styles/auth.css'
 
 export default function LoginPage() {
@@ -13,6 +14,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
@@ -32,7 +34,7 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthLayout active="login">
+    <AuthLayout active="login" title="Bem-vindo de volta" subtitle="Entre para continuar sua jornada de leitura.">
       {erro && <div className="auth-card__message auth-card__message--error">{erro}</div>}
 
       <form onSubmit={handleSubmit}>
@@ -42,6 +44,7 @@ export default function LoginPage() {
           type="email"
           placeholder="voce@email.com"
           autoComplete="email"
+          icon={<IconMail />}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -49,21 +52,33 @@ export default function LoginPage() {
         <Input
           id="password"
           label="Senha"
-          type="password"
+          type={mostrarSenha ? 'text' : 'password'}
           placeholder="Sua senha"
           autoComplete="current-password"
+          icon={<IconChave />}
+          suffix={
+            <button
+              type="button"
+              onClick={() => setMostrarSenha((v) => !v)}
+              aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              {mostrarSenha ? <IconOlhoFechado /> : <IconOlho />}
+            </button>
+          }
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        <div className="auth-shell__row">
+          <Link to="/esqueci-senha">Esqueci minha senha</Link>
+        </div>
+
         <Button type="submit" loading={carregando}>
           Entrar
         </Button>
       </form>
 
-      <p className="auth-split__footer">
-        <Link to="/esqueci-senha">Esqueci minha senha</Link>
-      </p>
       <p className="auth-split__footer">
         Ainda não tem conta? <Link to="/cadastro">Criar conta</Link>
       </p>

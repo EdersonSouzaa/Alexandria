@@ -29,3 +29,35 @@
   caret-color: var(--light-slate);
   transition: background-color 600000s 0s, color 600000s 0s;
 }
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.input-row__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.input-row__suffix {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.input-row__suffix button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}

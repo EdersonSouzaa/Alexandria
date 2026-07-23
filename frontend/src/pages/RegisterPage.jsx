@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import AuthLayout from '../components/AuthLayout'
+import { IconUsuario, IconMail, IconChave, IconOlho, IconOlhoFechado } from '../components/AuthIcons'
 import '../styles/auth.css'
 
 export default function RegisterPage() {
@@ -13,6 +14,7 @@ export default function RegisterPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
@@ -31,7 +33,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthLayout active="register">
+    <AuthLayout active="register" title="Comece sua jornada" subtitle="Crie sua conta gratuita e monte sua estante pessoal.">
       {erro && <div className="auth-card__message auth-card__message--error">{erro}</div>}
 
       <form onSubmit={handleSubmit}>
@@ -40,6 +42,7 @@ export default function RegisterPage() {
           label="Nome"
           placeholder="Seu nome"
           autoComplete="name"
+          icon={<IconUsuario />}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -50,6 +53,7 @@ export default function RegisterPage() {
           type="email"
           placeholder="voce@email.com"
           autoComplete="email"
+          icon={<IconMail />}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -57,14 +61,25 @@ export default function RegisterPage() {
         <Input
           id="password"
           label="Senha"
-          type="password"
+          type={mostrarSenha ? 'text' : 'password'}
           placeholder="Crie uma senha"
           autoComplete="new-password"
           minLength={8}
+          icon={<IconChave />}
+          suffix={
+            <button
+              type="button"
+              onClick={() => setMostrarSenha((v) => !v)}
+              aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              {mostrarSenha ? <IconOlhoFechado /> : <IconOlho />}
+            </button>
+          }
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
         <Button type="submit" loading={carregando}>
           Criar conta
         </Button>

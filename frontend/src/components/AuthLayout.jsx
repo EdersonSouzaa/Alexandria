@@ -1,41 +1,58 @@
 import { Link } from 'react-router-dom'
+import OwlLogo from './OwlLogo'
+import { IconEstrela } from './AuthIcons'
 import './AuthLayout.css'
 
-export default function AuthLayout({ active, children }) {
+export default function AuthLayout({ active, title, subtitle, children }) {
   return (
-    <div className="auth-split">
-      <div className="auth-split__left">
-        <div className="auth-split__brand">
-          <span className="auth-split__badge" aria-hidden="true">🦉</span>
-          <span className="auth-split__brand-name">Alexandria</span>
-        </div>
+    <div className="auth-shell">
+      <div className="auth-shell__blob auth-shell__blob--a" aria-hidden="true" />
+      <div className="auth-shell__blob auth-shell__blob--b" aria-hidden="true" />
 
-        <h1 className="auth-split__headline">Cada leitura é um novo capítulo da sua história.</h1>
-        <p className="auth-split__text">
-          Entre para continuar sua jornada de leitura e acompanhar sua evolução.
-        </p>
-      </div>
-
-      <div className="auth-split__right">
-        <div className="auth-split__card">
-          <div className="auth-tabs">
-            <Link
-              to="/login"
-              className={`auth-tabs__item${active === 'login' ? ' auth-tabs__item--active' : ''}`}
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/cadastro"
-              className={`auth-tabs__item${active === 'register' ? ' auth-tabs__item--active' : ''}`}
-            >
-              Criar conta
-            </Link>
+      <main className="auth-shell__main">
+        <div className="auth-shell__inner">
+          <div className="auth-shell__brand">
+            <span className="auth-shell__logo">
+              <OwlLogo size={40} />
+            </span>
+            <h1>Alexandria</h1>
+            <p>Sua estante digital</p>
           </div>
 
-          {children}
+          <div className="auth-shell__card">
+            <div className="auth-shell__card-edge" aria-hidden="true" />
+
+            <div className="auth-tabs">
+              <Link
+                to="/login"
+                className={`auth-tabs__item${active === 'login' ? ' auth-tabs__item--active' : ''}`}
+              >
+                Entrar
+              </Link>
+              <Link
+                to="/cadastro"
+                className={`auth-tabs__item${active === 'register' ? ' auth-tabs__item--active' : ''}`}
+              >
+                Criar conta
+              </Link>
+            </div>
+
+            {title && <h2 className="auth-shell__title">{title}</h2>}
+            {subtitle && <p className="auth-shell__subtitle">{subtitle}</p>}
+
+            {children}
+          </div>
+
+          <div className="auth-shell__deco">
+            <div className="auth-shell__stars" aria-hidden="true">
+              <IconEstrela />
+              <IconEstrela />
+              <IconEstrela />
+            </div>
+            <p>ALEXANDRIA · EST. MMXXIV</p>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
