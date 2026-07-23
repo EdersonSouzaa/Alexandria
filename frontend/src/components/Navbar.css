@@ -15,17 +15,21 @@
 }
 
 .navbar__brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--light-slate);
-  letter-spacing: -0.02em;
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: #fef9ed;
 }
 
 .navbar__brand:hover {
   text-decoration: none;
+}
+
+.navbar__brand-logo {
+  display: block;
+  height: 36px;
+  width: auto;
 }
 
 .navbar__links {

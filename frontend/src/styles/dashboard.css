@@ -98,28 +98,15 @@
 .dash__sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
   padding: 0 22px;
   margin-bottom: 28px;
-  font-family: var(--dash-serif);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--dash-primary);
   flex-shrink: 0;
 }
 
-.dash__sidebar-brand-badge {
-  --dark-navy: var(--dash-primary);
-  --cyan: var(--dash-surface);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(155deg, var(--dash-tertiary-container), var(--dash-tertiary-fixed-dim));
-  box-shadow: var(--dash-shadow-sm);
-  flex-shrink: 0;
+.dash__sidebar-logo {
+  display: block;
+  height: 40px;
+  width: auto;
 }
 
 .dash__sidebar-nav {

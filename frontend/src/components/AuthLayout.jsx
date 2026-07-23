@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import OwlLogo from './OwlLogo'
+import logo from '../assets/logo.png'
 import { IconEstrela } from './AuthIcons'
 import './AuthLayout.css'
 
@@ -12,10 +12,7 @@ export default function AuthLayout({ active, title, subtitle, children }) {
       <main className="auth-shell__main">
         <div className="auth-shell__inner">
           <div className="auth-shell__brand">
-            <span className="auth-shell__logo">
-              <OwlLogo size={40} />
-            </span>
-            <h1>Alexandria</h1>
+            <img src={logo} alt="Alexandria" className="auth-shell__logo" />
             <p>Sua estante digital</p>
           </div>
 

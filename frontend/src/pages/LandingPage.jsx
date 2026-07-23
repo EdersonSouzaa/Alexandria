@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useGamificacao } from '../context/GamificacaoContext'
 import OwlLogo from '../components/OwlLogo'
 import RatingStars from '../components/RatingStars'
+import logo from '../assets/logo.png'
 import heroBookCover from '../assets/hero-book-cover.jpg'
 import capaCemAnos from '../assets/shelf-cem-anos-de-solidao.jpg'
 import capaGrandeSertao from '../assets/shelf-grande-sertao-veredas.jpg'
@@ -170,10 +171,7 @@ export default function LandingPage() {
       <header className={`home__nav${scrolled ? ' home__nav--scrolled' : ''}`}>
         <div className="home__nav-inner">
           <Link to="/" className="home__brand">
-            <span className="home__brand-badge">
-              <OwlLogo size={22} />
-            </span>
-            <span>Alexandria</span>
+            <img src={logo} alt="Alexandria" className="home__brand-logo" />
           </Link>
 
           <nav className="home__nav-links">
@@ -460,11 +458,8 @@ export default function LandingPage() {
       <footer className="home__footer">
         <div className="home__footer-inner">
           <div className="home__footer-brand-col">
-            <span className="home__footer-brand">
-              <span className="home__footer-brand-badge">
-                <OwlLogo size={20} />
-              </span>
-              Alexandria
+            <span className="home__footer-brand-chip">
+              <img src={logo} alt="Alexandria" className="home__footer-brand-logo" />
             </span>
             <p className="home__footer-tagline">
               Dedicada à organização e à celebração da leitura, uma estante digital de cada vez.

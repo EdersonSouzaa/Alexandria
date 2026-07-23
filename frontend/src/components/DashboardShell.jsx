@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useGamificacao } from '../context/GamificacaoContext'
-import OwlLogo from './OwlLogo'
+import logo from '../assets/logo.png'
 import { IconUsuario } from './AuthIcons'
 import {
   IconBusca,
@@ -82,10 +82,7 @@ export default function DashboardShell({
 
         <aside className={`dash__sidebar${sidebarAberta ? ' dash__sidebar--open' : ''}`}>
           <Link to="/inicio" className="dash__sidebar-brand" onClick={() => setSidebarAberta(false)}>
-            <span className="dash__sidebar-brand-badge">
-              <OwlLogo size={20} />
-            </span>
-            <span>Alexandria</span>
+            <img src={logo} alt="Alexandria" className="dash__sidebar-logo" />
           </Link>
 
           <nav className="dash__sidebar-nav">

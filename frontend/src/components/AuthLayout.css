@@ -79,26 +79,10 @@
 }
 
 .auth-shell__logo {
-  --dark-navy: var(--auth-primary);
-  --cyan: var(--auth-surface);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin-bottom: 10px;
-  border-radius: 18px;
-  background: linear-gradient(155deg, var(--auth-tertiary-container), #e9c176);
-  box-shadow: var(--auth-shadow);
-}
-
-.auth-shell__brand h1 {
-  font-family: var(--auth-serif);
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--auth-primary);
-  margin: 0;
+  display: block;
+  height: 84px;
+  width: auto;
+  margin-bottom: 4px;
 }
 
 .auth-shell__brand p {
@@ -354,14 +338,8 @@
   }
 
   .auth-shell__logo {
-    width: 44px;
-    height: 44px;
+    height: 56px;
     margin-bottom: 6px;
-    border-radius: 14px;
-  }
-
-  .auth-shell__brand h1 {
-    font-size: 1.35rem;
   }
 
   .auth-shell__deco {

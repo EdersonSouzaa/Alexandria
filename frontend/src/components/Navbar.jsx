@@ -1,6 +1,6 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import OwlLogo from './OwlLogo'
+import logo from '../assets/logo.png'
 import './Navbar.css'
 
 const linksAutenticado = [
@@ -25,8 +25,7 @@ export default function Navbar() {
     <header className="navbar">
       <div className="container navbar__inner">
         <Link to={user ? '/inicio' : '/'} className="navbar__brand">
-          <OwlLogo size={32} />
-          <span>Alexandria</span>
+          <img src={logo} alt="Alexandria" className="navbar__brand-logo" />
         </Link>
 
         {user && (
