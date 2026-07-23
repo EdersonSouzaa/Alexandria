@@ -98,15 +98,16 @@
 .dash__sidebar-brand {
   display: flex;
   align-items: center;
-  padding: 0 22px;
-  margin-bottom: 28px;
+  padding: 0 18px;
+  margin-bottom: 24px;
   flex-shrink: 0;
 }
 
 .dash__sidebar-logo {
   display: block;
-  height: 40px;
+  height: clamp(56px, 6vw, 76px);
   width: auto;
+  max-width: 100%;
 }
 
 .dash__sidebar-nav {
