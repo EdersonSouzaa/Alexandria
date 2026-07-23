@@ -1,21 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import { useGamificacao } from '../context/GamificacaoContext'
 import { bibliotecaService } from '../services/bibliotecaService'
 import { comunidadeService } from '../services/comunidadeService'
-import OwlLogo from '../components/OwlLogo'
-import { IconUsuario } from '../components/AuthIcons'
+import DashboardShell from '../components/DashboardShell'
+import { IconBusca, IconEstante, IconPessoas, IconEstrela, IconTrofeu, iniciais } from '../components/DashboardIcons'
+import '../styles/dashboard.css'
 import '../styles/inicio.css'
-
-const SIDEBAR_LINKS = [
-  { to: '/inicio', label: 'Início', icon: 'inicio' },
-  { to: '/explorar', label: 'Explorar', icon: 'busca' },
-  { to: '/biblioteca', label: 'Biblioteca', icon: 'estante' },
-  { to: '/avaliacoes', label: 'Avaliações', icon: 'estrela' },
-  { to: '/comunidade', label: 'Comunidade', icon: 'pessoas' },
-  { to: '/conquistas', label: 'Conquistas', icon: 'trofeu' },
-]
 
 const TITULOS_NIVEL = [
   { min: 16, titulo: 'Lenda Literária' },
@@ -31,13 +22,6 @@ function tituloNivel(nivel) {
   return TITULOS_NIVEL.find((item) => nivel >= item.min)?.titulo ?? 'Leitor Iniciante'
 }
 
-function iniciais(nome) {
-  if (!nome) return '?'
-  const partes = nome.trim().split(/\s+/)
-  const letras = partes.length > 1 ? [partes[0][0], partes[partes.length - 1][0]] : [partes[0][0]]
-  return letras.join('').toUpperCase()
-}
-
 function descricaoPost(post) {
   const primeiraLinha = post.conteudo.split('\n')[0].trim()
   if (post.autorNome && primeiraLinha.startsWith(post.autorNome)) {
@@ -45,54 +29,6 @@ function descricaoPost(post) {
     return resto || primeiraLinha
   }
   return primeiraLinha
-}
-
-function IconBusca() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-      <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconSino() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M6 9a6 6 0 1112 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M10 19a2 2 0 004 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconEstante() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="3" width="4" height="18" rx="1" fill="currentColor" />
-      <rect x="10" y="3" width="4" height="18" rx="1" fill="currentColor" opacity="0.55" />
-      <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconPessoas() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="9" cy="8" r="3.2" stroke="currentColor" strokeWidth="2" />
-      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path
-        d="M15.5 5.3a3.2 3.2 0 010 6M20 20c0-2.8-1.9-5.1-4.5-5.8"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
 }
 
 function IconLivro() {
@@ -110,14 +46,6 @@ function IconLivro() {
         strokeWidth="1.8"
         strokeLinejoin="round"
       />
-    </svg>
-  )
-}
-
-function IconEstrela() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.8L12 2.5z" />
     </svg>
   )
 }
@@ -148,77 +76,6 @@ function IconCadeado() {
   )
 }
 
-function IconTrofeu() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M7 4h10v5a5 5 0 01-10 0V4z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path d="M5 6H3v1a4 4 0 003.5 4M19 6h2v1a4 4 0 01-3.5 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M10 15.5h4M12 15.5V19M9 20.5h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconInicio() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 11l8-7 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function IconMenu() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconClose() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconSair() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M15 4H6a1 1 0 00-1 1v14a1 1 0 001 1h9M11 12h9m0 0l-3.5-3.5M20 12l-3.5 3.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function IconMais() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-const SIDEBAR_ICONS = {
-  inicio: IconInicio,
-  busca: IconBusca,
-  estante: IconEstante,
-  estrela: IconEstrela,
-  pessoas: IconPessoas,
-  trofeu: IconTrofeu,
-}
-
 function LivroTile({ item, index }) {
   const livro = item.livro
   const cor = CORES_TILE[index % CORES_TILE.length]
@@ -238,7 +95,6 @@ function LivroTile({ item, index }) {
 }
 
 export default function InicioPage() {
-  const { user, logout } = useAuth()
   const { status, refresh } = useGamificacao()
   const navigate = useNavigate()
 
@@ -247,9 +103,6 @@ export default function InicioPage() {
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [termoBusca, setTermoBusca] = useState('')
-  const [menuAberto, setMenuAberto] = useState(false)
-  const [sidebarAberta, setSidebarAberta] = useState(false)
-  const menuRef = useRef(null)
 
   useEffect(() => {
     async function carregar() {
@@ -272,22 +125,6 @@ export default function InicioPage() {
     refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (!menuAberto) return
-    function handleClick(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuAberto(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [menuAberto])
-
-  function handleLogout() {
-    logout()
-    navigate('/')
-  }
 
   function handleBuscar(event) {
     event.preventDefault()
@@ -321,133 +158,14 @@ export default function InicioPage() {
 
   return (
     <div className="dash">
-      <div className="dash__shell">
-        {sidebarAberta && <div className="dash__sidebar-backdrop" onClick={() => setSidebarAberta(false)} />}
-
-        <aside className={`dash__sidebar${sidebarAberta ? ' dash__sidebar--open' : ''}`}>
-          <Link to="/inicio" className="dash__sidebar-brand" onClick={() => setSidebarAberta(false)}>
-            <span className="dash__sidebar-brand-badge">
-              <OwlLogo size={20} />
-            </span>
-            <span>Alexandria</span>
-          </Link>
-
-          <nav className="dash__sidebar-nav">
-            {SIDEBAR_LINKS.map((link) => {
-              const Icone = SIDEBAR_ICONS[link.icon]
-              return (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`dash__sidebar-link${link.to === '/inicio' ? ' dash__sidebar-link--active' : ''}`}
-                  onClick={() => setSidebarAberta(false)}
-                >
-                  <Icone />
-                  <span>{link.label}</span>
-                </Link>
-              )
-            })}
-          </nav>
-
-          <div className="dash__sidebar-foot">
-            <div className="dash__sidebar-user">
-              <div className="dash__sidebar-user-top">
-                <span className="dash__sidebar-user-avatar">{iniciais(user?.name)}</span>
-                <div className="dash__sidebar-user-text">
-                  <p className="dash__sidebar-user-name">{user?.name}</p>
-                  <p className="dash__sidebar-user-level">Nível {status?.nivel ?? 1}</p>
-                </div>
-              </div>
-              <div className="dash__sidebar-user-bar">
-                <div
-                  className="dash__sidebar-user-bar-fill"
-                  style={{ width: `${Math.min(100, Math.max(0, 100 - (status?.xpParaProximoNivel ?? 100)))}%` }}
-                />
-              </div>
-              <Link to="/conquistas" className="dash__sidebar-user-link" onClick={() => setSidebarAberta(false)}>
-                Ver conquistas
-              </Link>
-            </div>
-
-            <div className="dash__sidebar-foot-links">
-              <Link to="/perfil" className="dash__sidebar-foot-link" onClick={() => setSidebarAberta(false)}>
-                <IconUsuario width={18} height={18} />
-                <span>Meu perfil</span>
-              </Link>
-              <button type="button" className="dash__sidebar-foot-link" onClick={handleLogout}>
-                <IconSair />
-                <span>Sair</span>
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        <div className="dash__main">
-          <header className="dash__header">
-            <div className="dash__header-inner">
-              <button
-                type="button"
-                className="dash__menu-toggle"
-                aria-label="Abrir menu"
-                onClick={() => setSidebarAberta(true)}
-              >
-                <IconMenu />
-              </button>
-
-              <form className="dash__search" onSubmit={handleBuscar}>
-                <IconBusca />
-                <input
-                  type="text"
-                  aria-label="Buscar na sua biblioteca"
-                  placeholder="Buscar na sua biblioteca…"
-                  value={termoBusca}
-                  onChange={(e) => setTermoBusca(e.target.value)}
-                />
-              </form>
-
-              <div className="dash__header-actions">
-                <Link to="/comunidade" className="dash__icon-btn" aria-label="Novidades da comunidade">
-                  <IconSino />
-                </Link>
-
-                <Link to="/conquistas" className="dash__icon-btn" aria-label="Minhas conquistas">
-                  <IconTrofeu />
-                </Link>
-
-                <div className="dash__avatar-wrap" ref={menuRef}>
-                  <button
-                    type="button"
-                    className="dash__avatar"
-                    onClick={() => setMenuAberto((open) => !open)}
-                    aria-haspopup="true"
-                    aria-expanded={menuAberto}
-                  >
-                    {iniciais(user?.name)}
-                  </button>
-                  {menuAberto && (
-                    <div className="dash__avatar-menu">
-                      <div className="dash__avatar-menu-name">{user?.name}</div>
-                      <Link to="/perfil" onClick={() => setMenuAberto(false)}>
-                        Meu perfil
-                      </Link>
-                      <Link to="/biblioteca" onClick={() => setMenuAberto(false)}>
-                        Minha estante
-                      </Link>
-                      <Link to="/conquistas" onClick={() => setMenuAberto(false)}>
-                        Conquistas
-                      </Link>
-                      <button type="button" onClick={handleLogout}>
-                        Sair
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <div className="dash__inner">
-            {erro && <div className="dash__error">{erro}</div>}
+      <DashboardShell
+        active="/inicio"
+        searchValue={termoBusca}
+        onSearchChange={setTermoBusca}
+        onSearchSubmit={handleBuscar}
+        searchPlaceholder="Buscar na sua biblioteca…"
+      >
+        {erro && <div className="dash__error">{erro}</div>}
 
         {destaque ? (
           <section className="dash__hero">
@@ -664,13 +382,7 @@ export default function InicioPage() {
             </div>
           </aside>
         </div>
-          </div>
-        </div>
-      </div>
-
-      <Link to="/explorar" className="dash__fab" aria-label="Adicionar livro à estante">
-        <IconMais />
-      </Link>
+      </DashboardShell>
     </div>
   )
 }

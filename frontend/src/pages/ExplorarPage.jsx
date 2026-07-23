@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { livroService } from '../services/livroService'
-import Input from '../components/Input'
-import Button from '../components/Button'
-import BookCard from '../components/BookCard'
+import { bibliotecaService } from '../services/bibliotecaService'
 import Pagination from '../components/Pagination'
-import LoadingSpinner from '../components/LoadingSpinner'
+import DashboardShell from '../components/DashboardShell'
+import '../styles/dashboard.css'
 import '../styles/explorar.css'
 
 const CATEGORIAS = [
@@ -18,6 +17,30 @@ const CATEGORIAS = [
   { valor: 'self-help', label: 'Autoajuda' },
 ]
 
+function IconChevron() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconMais() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconCheck() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function ExplorarPage() {
   const [searchParams] = useSearchParams()
 
@@ -28,6 +51,7 @@ export default function ExplorarPage() {
   const [resultado, setResultado] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+  const [adicionando, setAdicionando] = useState({})
 
   const tamanhoPagina = 20
 
@@ -57,60 +81,145 @@ export default function ExplorarPage() {
   useEffect(() => {
     buscar(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [categoria, ordenar])
 
   function handleSubmit(event) {
     event.preventDefault()
     buscar(0)
   }
 
+  async function handleAdicionar(livro) {
+    const id = livro.identificadorExterno
+    setAdicionando((prev) => ({ ...prev, [id]: 'carregando' }))
+    try {
+      await bibliotecaService.adicionar({ identificadorExterno: id, statusLeitura: 'QUERO_LER' })
+      setAdicionando((prev) => ({ ...prev, [id]: 'ok' }))
+    } catch (error) {
+      const mensagem = error.response?.data?.mensagem ?? 'Não foi possível adicionar.'
+      setAdicionando((prev) => ({ ...prev, [id]: mensagem }))
+      setTimeout(() => {
+        setAdicionando((prev) => ({ ...prev, [id]: undefined }))
+      }, 3000)
+    }
+  }
+
   const totalPaginas = resultado ? Math.ceil(resultado.totalResultados / tamanhoPagina) : 0
 
   return (
-    <div className="page container">
-      <span className="kicker">Explorar</span>
-      <h1>Encontre seu próximo livro</h1>
-
-      <form className="explorar__filtros" onSubmit={handleSubmit}>
-        <Input
-          aria-label="Termo de busca"
-          placeholder="Título, autor ou assunto…"
-          value={termo}
-          onChange={(e) => setTermo(e.target.value)}
-        />
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="input">
-          {CATEGORIAS.map((c) => (
-            <option key={c.valor} value={c.valor}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-        <select value={ordenar} onChange={(e) => setOrdenar(e.target.value)} className="input">
-          <option value="relevancia">Mais relevantes</option>
-          <option value="recentes">Mais recentes</option>
-        </select>
-        <Button type="submit">Buscar</Button>
-      </form>
-
-      {carregando && <LoadingSpinner label="Buscando livros…" />}
-      {erro && <p className="form-error">{erro}</p>}
-
-      {!carregando && resultado && resultado.livros.length === 0 && (
-        <div className="empty-state">
-          <p>Nenhum livro encontrado para essa busca.</p>
-        </div>
-      )}
-
-      {!carregando && resultado && resultado.livros.length > 0 && (
-        <>
-          <div className="grid grid-cards">
-            {resultado.livros.map((livro) => (
-              <BookCard key={livro.identificadorExterno} livro={livro} linkTo={`/livros/${livro.identificadorExterno}`} />
-            ))}
+    <div className="dash">
+      <DashboardShell
+        active="/explorar"
+        searchValue={termo}
+        onSearchChange={setTermo}
+        onSearchSubmit={handleSubmit}
+        searchPlaceholder="Título, autor ou assunto…"
+      >
+        <div className="dash__explore-head">
+          <div>
+            <h1>Explorar</h1>
+            <p>
+              {resultado
+                ? `${resultado.totalResultados} ${resultado.totalResultados === 1 ? 'livro encontrado' : 'livros encontrados'}`
+                : 'Encontre seu próximo livro'}
+              {termo && (
+                <>
+                  {' '}
+                  para <em>&quot;{termo}&quot;</em>
+                </>
+              )}
+            </p>
           </div>
-          <Pagination pagina={pagina} totalPaginas={totalPaginas} onChange={buscar} />
-        </>
-      )}
+
+          <div className="dash__explore-filters">
+            <label className="dash__pill-select">
+              <select value={categoria} onChange={(e) => setCategoria(e.target.value)} aria-label="Categoria">
+                {CATEGORIAS.map((c) => (
+                  <option key={c.valor} value={c.valor}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <IconChevron />
+            </label>
+            <label className="dash__pill-select">
+              <select value={ordenar} onChange={(e) => setOrdenar(e.target.value)} aria-label="Ordenar por">
+                <option value="relevancia">Mais relevantes</option>
+                <option value="recentes">Mais recentes</option>
+              </select>
+              <IconChevron />
+            </label>
+          </div>
+        </div>
+
+        {carregando && (
+          <div className="dash__loading">
+            <span className="dash__spinner" />
+            <span>Buscando livros…</span>
+          </div>
+        )}
+
+        {!carregando && erro && <div className="dash__error">{erro}</div>}
+
+        {!carregando && !erro && resultado && resultado.livros.length === 0 && (
+          <div className="dash__empty">Nenhum livro encontrado para essa busca.</div>
+        )}
+
+        {!carregando && !erro && resultado && resultado.livros.length > 0 && (
+          <>
+            <div className="dash__explore-grid">
+              {resultado.livros.map((livro) => {
+                const estado = adicionando[livro.identificadorExterno]
+                const detalheUrl = `/livros/${livro.identificadorExterno}`
+                return (
+                  <div className="dash__book" key={livro.identificadorExterno}>
+                    <div className="dash__book-cover">
+                      <Link to={detalheUrl}>
+                        {livro.capa ? (
+                          <img src={livro.capa} alt={`Capa de ${livro.titulo}`} loading="lazy" />
+                        ) : (
+                          <span className="dash__book-placeholder">{livro.titulo?.[0]}</span>
+                        )}
+                      </Link>
+                      <div className="dash__book-overlay">
+                        <button
+                          type="button"
+                          className={`dash__book-add${estado === 'ok' ? ' dash__book-add--ok' : ''}`}
+                          onClick={() => handleAdicionar(livro)}
+                          disabled={estado === 'carregando' || estado === 'ok'}
+                        >
+                          {estado === 'ok' ? (
+                            <>
+                              <IconCheck /> Na estante
+                            </>
+                          ) : estado === 'carregando' ? (
+                            'Adicionando…'
+                          ) : (
+                            <>
+                              <IconMais /> Adicionar
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="dash__book-ledge" />
+                    <div className="dash__book-info">
+                      <Link to={detalheUrl}>
+                        <h3>{livro.titulo}</h3>
+                      </Link>
+                      {livro.autor && <p className="dash__book-author">{livro.autor}</p>}
+                      {livro.categoria && <span className="dash__book-tag">{livro.categoria}</span>}
+                      {estado && estado !== 'carregando' && estado !== 'ok' && (
+                        <p className="dash__book-error">{estado}</p>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <Pagination pagina={pagina} totalPaginas={totalPaginas} onChange={buscar} />
+          </>
+        )}
+      </DashboardShell>
     </div>
   )
 }
