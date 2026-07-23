@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { bibliotecaService } from '../services/bibliotecaService'
 import { useGamificacao } from '../context/GamificacaoContext'
 import DashboardShell from '../components/DashboardShell'
+import HeroCover from '../components/HeroCover'
 import { IconEstrela } from '../components/DashboardIcons'
 import '../styles/dashboard.css'
 import '../styles/book-grid.css'
@@ -189,16 +190,15 @@ export default function MinhaBibliotecaPage() {
                   'Você está lendo este livro agora.'}
               </p>
               <Link to={`/livros/${destaque.livro.identificadorExterno}`} className="dash__hero-btn">
-                Continuar leitura
+                Avaliar Livro
               </Link>
             </div>
             <div className="dash__hero-visual">
-              <div
-                className="dash__hero-cover"
-                style={{ backgroundImage: destaque.livro.capa ? `url(${destaque.livro.capa})` : undefined }}
-              >
-                <span>{destaque.livro.titulo}</span>
-              </div>
+              <HeroCover
+                key={destaque.livro.identificadorExterno}
+                capa={destaque.livro.capa}
+                titulo={destaque.livro.titulo}
+              />
             </div>
           </section>
         )}

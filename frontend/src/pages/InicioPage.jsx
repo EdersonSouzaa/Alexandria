@@ -4,6 +4,7 @@ import { useGamificacao } from '../context/GamificacaoContext'
 import { bibliotecaService } from '../services/bibliotecaService'
 import { comunidadeService } from '../services/comunidadeService'
 import DashboardShell from '../components/DashboardShell'
+import HeroCover from '../components/HeroCover'
 import { IconBusca, IconEstante, IconPessoas, IconEstrela, IconTrofeu, iniciais } from '../components/DashboardIcons'
 import { tituloAtual } from '../components/AchievementIcons'
 import '../styles/dashboard.css'
@@ -166,16 +167,15 @@ export default function InicioPage() {
                   (destaqueEmAndamento ? 'Você está lendo este livro agora.' : 'Está na sua lista de leitura.')}
               </p>
               <Link to={`/livros/${destaque.livro.identificadorExterno}`} className="dash__hero-btn">
-                {destaqueEmAndamento ? 'Continuar leitura' : 'Começar leitura'}
+                {destaqueEmAndamento ? 'Avaliar Livro' : 'Começar leitura'}
               </Link>
             </div>
             <div className="dash__hero-visual">
-              <div
-                className="dash__hero-cover"
-                style={{ backgroundImage: destaque.livro.capa ? `url(${destaque.livro.capa})` : undefined }}
-              >
-                <span>{destaque.livro.titulo}</span>
-              </div>
+              <HeroCover
+                key={destaque.livro.identificadorExterno}
+                capa={destaque.livro.capa}
+                titulo={destaque.livro.titulo}
+              />
             </div>
           </section>
         ) : (
