@@ -13,6 +13,7 @@ const FULL_BLEED_ROUTES = [
   '/avaliacoes',
   '/comunidade',
   '/conquistas',
+  '/perfil',
 ]
 
 function App() {

@@ -5,22 +5,11 @@ import { bibliotecaService } from '../services/bibliotecaService'
 import { comunidadeService } from '../services/comunidadeService'
 import DashboardShell from '../components/DashboardShell'
 import { IconBusca, IconEstante, IconPessoas, IconEstrela, IconTrofeu, iniciais } from '../components/DashboardIcons'
+import { tituloAtual } from '../components/AchievementIcons'
 import '../styles/dashboard.css'
 import '../styles/inicio.css'
 
-const TITULOS_NIVEL = [
-  { min: 16, titulo: 'Lenda Literária' },
-  { min: 11, titulo: 'Sábio de Alexandria' },
-  { min: 7, titulo: 'Guardião dos Pergaminhos' },
-  { min: 4, titulo: 'Leitor Dedicado' },
-  { min: 1, titulo: 'Leitor Iniciante' },
-]
-
 const CORES_TILE = ['#c8934c', '#51637a', '#33241a', '#3f5940', '#8a3a2f', '#7c6f42', '#4a3524']
-
-function tituloNivel(nivel) {
-  return TITULOS_NIVEL.find((item) => nivel >= item.min)?.titulo ?? 'Leitor Iniciante'
-}
 
 function descricaoPost(post) {
   const primeiraLinha = post.conteudo.split('\n')[0].trim()
@@ -284,7 +273,7 @@ export default function InicioPage() {
                 <>
                   <div className="dash__level-top">
                     <h3>Nível {nivel}</h3>
-                    <span className="dash__level-badge">{tituloNivel(nivel)}</span>
+                    <span className="dash__level-badge">{tituloAtual(nivel).titulo}</span>
                   </div>
                   <p className="dash__level-xp">
                     {xpAtualNivel} / 100 XP para o Nível {nivel + 1}
