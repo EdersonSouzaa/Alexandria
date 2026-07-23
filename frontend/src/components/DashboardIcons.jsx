@@ -21,6 +21,21 @@ export function IconSino(props) {
   )
 }
 
+export function IconLivroAberto(props) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M12 6.2c-1.7-1.2-3.9-1.9-6.3-1.9-.9 0-1.8.1-2.7.35v14c.9-.25 1.8-.35 2.7-.35 2.4 0 4.6.7 6.3 1.9 1.7-1.2 3.9-1.9 6.3-1.9.9 0 1.8.1 2.7.35v-14c-.9-.25-1.8-.35-2.7-.35-2.4 0-4.6.7-6.3 1.9z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <path d="M12 6.2v14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export function IconEstante(props) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>

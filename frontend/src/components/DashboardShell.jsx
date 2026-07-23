@@ -7,7 +7,7 @@ import { IconUsuario } from './AuthIcons'
 import {
   IconBusca,
   IconSino,
-  IconEstante,
+  IconLivroAberto,
   IconPessoas,
   IconEstrela,
   IconTrofeu,
@@ -23,7 +23,7 @@ import '../styles/dashboard.css'
 const SIDEBAR_LINKS = [
   { to: '/inicio', label: 'Início', icon: IconInicio },
   { to: '/explorar', label: 'Explorar', icon: IconBusca },
-  { to: '/biblioteca', label: 'Biblioteca', icon: IconEstante },
+  { to: '/biblioteca', label: 'Biblioteca', icon: IconLivroAberto },
   { to: '/avaliacoes', label: 'Avaliações', icon: IconEstrela },
   { to: '/comunidade', label: 'Comunidade', icon: IconPessoas },
   { to: '/conquistas', label: 'Conquistas', icon: IconTrofeu },

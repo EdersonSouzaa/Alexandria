@@ -5,7 +5,7 @@ import { bibliotecaService } from '../services/bibliotecaService'
 import Pagination from '../components/Pagination'
 import DashboardShell from '../components/DashboardShell'
 import '../styles/dashboard.css'
-import '../styles/explorar.css'
+import '../styles/book-grid.css'
 
 const CATEGORIAS = [
   { valor: '', label: 'Todas as categorias' },
@@ -114,7 +114,7 @@ export default function ExplorarPage() {
         onSearchSubmit={handleSubmit}
         searchPlaceholder="Título, autor ou assunto…"
       >
-        <div className="dash__explore-head">
+        <div className="dash__page-head">
           <div>
             <h1>Explorar</h1>
             <p>
@@ -130,7 +130,7 @@ export default function ExplorarPage() {
             </p>
           </div>
 
-          <div className="dash__explore-filters">
+          <div className="dash__filters">
             <label className="dash__pill-select">
               <select value={categoria} onChange={(e) => setCategoria(e.target.value)} aria-label="Categoria">
                 {CATEGORIAS.map((c) => (
@@ -166,7 +166,7 @@ export default function ExplorarPage() {
 
         {!carregando && !erro && resultado && resultado.livros.length > 0 && (
           <>
-            <div className="dash__explore-grid">
+            <div className="dash__book-grid">
               {resultado.livros.map((livro) => {
                 const estado = adicionando[livro.identificadorExterno]
                 const detalheUrl = `/livros/${livro.identificadorExterno}`

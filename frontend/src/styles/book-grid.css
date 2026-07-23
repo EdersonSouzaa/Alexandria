@@ -1,5 +1,5 @@
-/* ===== Explore header ===== */
-.dash__explore-head {
+/* ===== Page header (title + filter pills) ===== */
+.dash__page-head {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -9,25 +9,26 @@
   margin-bottom: 40px;
 }
 
-.dash__explore-head h1 {
+.dash__page-head h1 {
   font-size: clamp(1.7rem, 2.6vw, 2.1rem);
   margin-bottom: 8px;
 }
 
-.dash__explore-head p {
+.dash__page-head p {
   font-size: 0.96rem;
   color: var(--dash-on-surface-variant);
 }
 
-.dash__explore-head em {
+.dash__page-head em {
   font-style: italic;
   font-weight: 700;
   color: var(--dash-primary);
 }
 
-.dash__explore-filters {
+.dash__filters {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
 }
 
@@ -66,8 +67,34 @@
   pointer-events: none;
 }
 
+.dash__filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--dash-radius-sm);
+  border: 1px solid var(--dash-outline-variant);
+  background: var(--dash-surface-container);
+  color: var(--dash-on-surface);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.dash__filter-toggle:hover {
+  border-color: var(--dash-tertiary);
+}
+
+.dash__filter-toggle--active {
+  background: var(--dash-tertiary-container);
+  border-color: var(--dash-tertiary);
+  color: var(--dash-on-tertiary-container);
+}
+
 /* ===== Book grid ===== */
-.dash__explore-grid {
+.dash__book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 32px;
@@ -178,6 +205,36 @@
   color: var(--dash-on-secondary-container);
 }
 
+.dash__book-corner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+.dash .dash__book-fav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(254, 249, 237, 0.9);
+  color: var(--dash-outline);
+  cursor: pointer;
+  box-shadow: var(--dash-shadow-sm);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.dash .dash__book-fav:hover {
+  transform: scale(1.08);
+}
+
+.dash .dash__book-fav--ativo {
+  color: var(--dash-tertiary);
+}
+
 .dash__book-ledge {
   height: 4px;
   flex-shrink: 0;
@@ -226,6 +283,34 @@
   color: var(--dash-on-error-container);
 }
 
+/* Status pill select, used on cards where the user manages their own copy */
+.dash__book-status {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.dash__book-status select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 4px 26px 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--dash-outline-variant);
+  background: var(--dash-surface-container) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2373777d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
+  color: var(--dash-on-surface);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.dash__book-status select:hover,
+.dash__book-status select:focus-visible {
+  border-color: var(--dash-tertiary);
+  outline: none;
+}
+
 /* ===== Pagination override ===== */
 .dash .pagination {
   margin-top: 48px;
@@ -249,12 +334,12 @@
 }
 
 @media (max-width: 640px) {
-  .dash__explore-grid {
+  .dash__book-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
   }
 
-  .dash__explore-head {
+  .dash__page-head {
     align-items: flex-start;
   }
 }
@@ -262,7 +347,8 @@
 @media (prefers-reduced-motion: reduce) {
   .dash__book,
   .dash__book-cover img,
-  .dash .dash__book-add {
+  .dash .dash__book-add,
+  .dash .dash__book-fav {
     transition: none;
   }
 }
