@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useGamificacao } from '../context/GamificacaoContext'
 import OwlLogo from '../components/OwlLogo'
+import RatingStars from '../components/RatingStars'
 import heroBookCover from '../assets/hero-book-cover.jpg'
 import capaCemAnos from '../assets/shelf-cem-anos-de-solidao.jpg'
 import capaGrandeSertao from '../assets/shelf-grande-sertao-veredas.jpg'
@@ -11,35 +13,17 @@ import capaDivinaComedia from '../assets/shelf-divina-comedia.jpg'
 import '../styles/landing.css'
 
 const estatisticas = [
-  { valor: '48 mil+', rotulo: 'livros catalogados' },
-  { valor: '12 mil+', rotulo: 'leitores ativos' },
-  { valor: '96 mil+', rotulo: 'resenhas escritas' },
+  { valor: '48 mil+', rotulo: 'Livros catalogados' },
+  { valor: '12 mil+', rotulo: 'Leitores ativos' },
+  { valor: '96 mil+', rotulo: 'Resenhas escritas' },
 ]
 
 const livrosDestaque = [
-  { titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', cor: 'tan', capa: capaCemAnos },
-  { titulo: 'Grande Sertão: Veredas', autor: 'Guimarães Rosa', cor: 'green', capa: capaGrandeSertao },
-  { titulo: '1984', autor: 'George Orwell', cor: 'blue', capa: capa1984 },
-  { titulo: 'Dom Quixote', autor: 'Miguel de Cervantes', cor: 'red', capa: capaDomQuixote },
-  { titulo: 'A Divina Comédia', autor: 'Dante Alighieri', cor: 'brown', capa: capaDivinaComedia },
-]
-
-const recursos = [
-  {
-    titulo: 'Organize sua estante',
-    descricao: 'Classifique cada livro por quero ler, lendo, lido ou abandonado.',
-    icon: <IconEstante />,
-  },
-  {
-    titulo: 'Avalie e comente',
-    descricao: 'Dê nota, escreva resenhas e compartilhe com a comunidade.',
-    icon: <IconEstrela />,
-  },
-  {
-    titulo: 'Evolua lendo',
-    descricao: 'Ganhe XP, suba de nível e desbloqueie conquistas a cada leitura.',
-    icon: <IconRaio />,
-  },
+  { titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', capa: capaCemAnos },
+  { titulo: 'Grande Sertão: Veredas', autor: 'Guimarães Rosa', capa: capaGrandeSertao },
+  { titulo: '1984', autor: 'George Orwell', capa: capa1984 },
+  { titulo: 'Dom Quixote', autor: 'Miguel de Cervantes', capa: capaDomQuixote },
+  { titulo: 'A Divina Comédia', autor: 'Dante Alighieri', capa: capaDivinaComedia },
 ]
 
 const navLinks = [
@@ -47,18 +31,18 @@ const navLinks = [
   { to: '/comunidade', label: 'Comunidade' },
 ]
 
-function IconBusca() {
+function IconBusca(props) {
   return (
-    <svg className="home__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
       <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
 }
 
-function IconEstante() {
+function IconEstante(props) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <rect x="3" y="3" width="4" height="18" rx="1" fill="currentColor" />
       <rect x="10" y="3" width="4" height="18" rx="1" fill="currentColor" opacity="0.55" />
       <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" />
@@ -66,33 +50,84 @@ function IconEstante() {
   )
 }
 
-function IconEstrela() {
+function IconEstrela(props) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
       <path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.8L12 2.5z" />
     </svg>
   )
 }
 
-function IconRaio() {
+function IconTrofeu(props) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M7 4h10v4a5 5 0 01-5 5 5 5 0 01-5-5V4z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path d="M7 5H4a3 3 0 003 3M17 5h3a3 3 0 01-3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M12 13v3M9 20h6M10 20v-2a2 2 0 012-2 2 2 0 012 2v2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
   )
 }
 
-function IconMenu() {
+function IconGrupo(props) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <circle cx="9" cy="8" r="3" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="17" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M15 14.3c2.6.4 4.5 2.6 4.5 5.7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconConta(props) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <circle cx="12" cy="8" r="3.4" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M5 20c0-3.6 3.1-6.4 7-6.4s7 2.8 7 6.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconMais(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconSetaDiagonal(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconSeta(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconMenu(props) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
 }
 
-function IconClose() {
+function IconClose(props) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
@@ -100,6 +135,7 @@ function IconClose() {
 
 export default function LandingPage() {
   const { user, logout } = useAuth()
+  const { status } = useGamificacao()
   const navigate = useNavigate()
   const [termo, setTermo] = useState('')
   const [scrolled, setScrolled] = useState(false)
@@ -116,6 +152,7 @@ export default function LandingPage() {
 
   function handleBuscar(event) {
     event.preventDefault()
+    setMenuOpen(false)
     if (user) {
       navigate(`/explorar?termo=${encodeURIComponent(termo)}`)
     } else {
@@ -148,12 +185,32 @@ export default function LandingPage() {
             <a href="#sobre">Sobre</a>
           </nav>
 
+          <form className="home__nav-search" onSubmit={handleBuscar}>
+            <IconBusca />
+            <input
+              type="text"
+              aria-label="Buscar um livro"
+              placeholder="Título, autor, gênero…"
+              value={termo}
+              onChange={(event) => setTermo(event.target.value)}
+            />
+            <button type="submit" aria-label="Buscar">
+              <IconSeta />
+            </button>
+          </form>
+
           <div className="home__nav-actions">
             <span className="home__nav-actions-auth">
               {user ? (
                 <>
-                  <Link to="/perfil" className="home__nav-user">
-                    {user.name}
+                  {status && (
+                    <Link to="/conquistas" className="home__nav-level">
+                      <IconTrofeu width={16} height={16} />
+                      Nível {status.nivel}
+                    </Link>
+                  )}
+                  <Link to="/perfil" className="home__nav-icon" aria-label="Meu perfil">
+                    <IconConta />
                   </Link>
                   <button type="button" className="home__btn home__btn--dark" onClick={handleLogout}>
                     Sair
@@ -184,6 +241,20 @@ export default function LandingPage() {
         </div>
 
         <div className="home__mobile-menu" hidden={!menuOpen}>
+          <form className="home__mobile-search" onSubmit={handleBuscar}>
+            <IconBusca />
+            <input
+              type="text"
+              aria-label="Buscar um livro"
+              placeholder="Busque por título, autor ou gênero…"
+              value={termo}
+              onChange={(event) => setTermo(event.target.value)}
+            />
+            <button type="submit" aria-label="Buscar">
+              <IconSeta />
+            </button>
+          </form>
+
           <nav className="home__mobile-links">
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}>
@@ -199,6 +270,9 @@ export default function LandingPage() {
               <>
                 <Link to="/perfil" className="home__btn home__btn--ghost home__btn--block" onClick={() => setMenuOpen(false)}>
                   Meu perfil
+                </Link>
+                <Link to="/conquistas" className="home__btn home__btn--ghost home__btn--block" onClick={() => setMenuOpen(false)}>
+                  Minhas conquistas
                 </Link>
                 <button
                   type="button"
@@ -240,19 +314,15 @@ export default function LandingPage() {
               página lida — junto de uma comunidade de leitores.
             </p>
 
-            <form className="home__search" onSubmit={handleBuscar}>
-              <IconBusca />
-              <input
-                type="text"
-                aria-label="Buscar um livro"
-                placeholder="Busque por título, autor ou gênero…"
-                value={termo}
-                onChange={(event) => setTermo(event.target.value)}
-              />
-              <button type="submit" className="home__btn home__btn--primary">
-                Buscar
-              </button>
-            </form>
+            <div className="home__hero-actions">
+              <Link to={user ? '/inicio' : '/cadastro'} className="home__btn home__btn--primary home__btn--lg">
+                Começar a ler
+                <IconSetaDiagonal />
+              </Link>
+              <Link to="/explorar" className="home__btn home__btn--ghost home__btn--lg">
+                Explorar catálogo
+              </Link>
+            </div>
 
             <div className="home__stats">
               {estatisticas.map((item) => (
@@ -264,7 +334,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="home__hero-visual" aria-hidden="true">
+          <div className="home__hero-visual">
             <div className="home__cover-stack">
               <div
                 className="home__cover-card home__cover-card--main"
@@ -272,6 +342,14 @@ export default function LandingPage() {
                 role="img"
                 aria-label="Capa do livro Dom Casmurro, de Machado de Assis"
               />
+            </div>
+            <div className="home__cover-badge" aria-hidden="true">
+              <div className="home__cover-badge-head">
+                <IconTrofeu width={18} height={18} />
+                Destaque da semana
+              </div>
+              <h4>Dom Casmurro</h4>
+              <p>Machado de Assis</p>
             </div>
           </div>
         </div>
@@ -283,22 +361,31 @@ export default function LandingPage() {
             <span className="home__eyebrow">Catálogo</span>
             <h2>Em destaque agora</h2>
           </div>
-          <Link to="/explorar">Ver tudo →</Link>
+          <Link to="/explorar">
+            Ver tudo <IconSeta />
+          </Link>
         </div>
 
         <div className="home__shelf">
           {livrosDestaque.map((livro) => (
-            <div
-              className={`home__spine home__spine--${livro.cor}`}
+            <Link
+              to={user ? '/explorar' : '/cadastro'}
+              className="home__book"
               key={livro.titulo}
-              style={{ '--spine-cover': `url(${livro.capa})` }}
             >
-              <span className="home__spine-title">{livro.titulo}</span>
-              <span className="home__spine-author">{livro.autor}</span>
-            </div>
+              <div className="home__book-cover">
+                <div className="home__book-image" style={{ backgroundImage: `url(${livro.capa})` }} />
+                <div className="home__book-overlay">
+                  <span className="home__book-add">
+                    <IconMais />
+                  </span>
+                </div>
+              </div>
+              <h4>{livro.titulo}</h4>
+              <span>{livro.autor}</span>
+            </Link>
           ))}
         </div>
-        <div className="home__shelf-bar" aria-hidden="true" />
       </section>
 
       <section className="home__features-section" id="sobre">
@@ -308,14 +395,65 @@ export default function LandingPage() {
           <p>Uma estante digital completa, pensada para quem gosta de acompanhar cada capítulo da própria jornada leitora.</p>
         </div>
 
-        <div className="home__features">
-          {recursos.map((item) => (
-            <div className="home__feature-card" key={item.titulo}>
-              <span className="home__feature-icon">{item.icon}</span>
-              <h3>{item.titulo}</h3>
-              <p>{item.descricao}</p>
+        <div className="home__bento">
+          <div className="home__bento-card home__bento-card--lg home__bento-card--surface">
+            <IconEstante width={140} height={140} className="home__bento-decor" />
+            <span className="home__bento-icon">
+              <IconEstante />
+            </span>
+            <h3>Sua estante pessoal</h3>
+            <p>Classifique cada livro por quero ler, lendo, lido ou abandonado e nunca perca o fio da sua jornada de leitura.</p>
+            <Link to={user ? '/biblioteca' : '/cadastro'} className="home__bento-link">
+              Ver minha estante <IconSeta />
+            </Link>
+          </div>
+
+          <div className="home__bento-card home__bento-card--sm home__bento-card--dark">
+            <span className="home__bento-icon">
+              <IconGrupo />
+            </span>
+            <h3>Círculo de leitores</h3>
+            <p>Comente, troque indicações e acompanhe o que a comunidade Alexandria está lendo agora.</p>
+          </div>
+
+          <div className="home__bento-card home__bento-card--sm home__bento-card--tint">
+            <span className="home__bento-icon">
+              <IconTrofeu />
+            </span>
+            <h3>Suba de nível</h3>
+            <p>Ganhe XP a cada leitura e resenha, desbloqueie conquistas e evolua como leitor.</p>
+          </div>
+
+          <div className="home__bento-card home__bento-card--lg home__bento-card--surface">
+            <span className="home__bento-icon">
+              <IconEstrela />
+            </span>
+            <h3>Avalie e compartilhe</h3>
+            <p>Dê nota, escreva resenhas completas e veja o que outros leitores acharam de cada obra.</p>
+            <div className="home__bento-stars">
+              <RatingStars value={5} readOnly />
             </div>
-          ))}
+            <Link to={user ? '/avaliacoes' : '/cadastro'} className="home__bento-link">
+              Ver avaliações <IconSeta />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="home__cta">
+        <div className="home__cta-inner">
+          <div className="home__cta-owl" aria-hidden="true">
+            <OwlLogo size={340} />
+          </div>
+          <div className="home__cta-content">
+            <span className="home__eyebrow">Comece hoje</span>
+            <h2>Preserve sua própria jornada de leitura.</h2>
+            <p>Crie sua conta gratuita e monte sua biblioteca pessoal em poucos minutos — sem custo, sem complicação.</p>
+            <Link to={user ? '/inicio' : '/cadastro'} className="home__btn home__btn--gold home__btn--lg">
+              {user ? 'Ir para minha estante' : 'Criar minha conta grátis'}
+              <IconSetaDiagonal />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -328,6 +466,40 @@ export default function LandingPage() {
               </span>
               Alexandria
             </span>
+            <p className="home__footer-tagline">
+              Dedicada à organização e à celebração da leitura, uma estante digital de cada vez.
+            </p>
+          </div>
+
+          <div className="home__footer-cols">
+            <div className="home__footer-col">
+              <h5>Explorar</h5>
+              <ul>
+                <li>
+                  <Link to="/explorar">Catálogo</Link>
+                </li>
+                <li>
+                  <Link to="/comunidade">Comunidade</Link>
+                </li>
+                <li>
+                  <Link to="/conquistas">Conquistas</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="home__footer-col">
+              <h5>Minha conta</h5>
+              <ul>
+                <li>
+                  <Link to={user ? '/biblioteca' : '/login'}>Minha biblioteca</Link>
+                </li>
+                <li>
+                  <Link to={user ? '/avaliacoes' : '/login'}>Minhas avaliações</Link>
+                </li>
+                <li>
+                  <Link to={user ? '/perfil' : '/cadastro'}>{user ? 'Meu perfil' : 'Criar conta'}</Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
