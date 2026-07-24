@@ -300,10 +300,6 @@ export default function LandingPage() {
       <section className="home__hero">
         <div className="home__hero-inner">
           <div className="home__hero-copy">
-            <span className="home__eyebrow">
-              <span className="home__eyebrow-dot" />
-              Sua biblioteca, sua jornada
-            </span>
             <h1>
               Organize suas leituras com a alma da <em>antiga Alexandria</em>
             </h1>
@@ -356,7 +352,6 @@ export default function LandingPage() {
       <section className="home__shelf-section">
         <div className="home__section-head">
           <div>
-            <span className="home__eyebrow">Catálogo</span>
             <h2>Em destaque agora</h2>
           </div>
           <Link to="/explorar">
@@ -388,7 +383,6 @@ export default function LandingPage() {
 
       <section className="home__features-section" id="sobre">
         <div className="home__section-center">
-          <span className="home__eyebrow">Por que a Alexandria</span>
           <h2>Tudo que você precisa para ler mais</h2>
           <p>Uma estante digital completa, pensada para quem gosta de acompanhar cada capítulo da própria jornada leitora.</p>
         </div>
@@ -444,7 +438,6 @@ export default function LandingPage() {
             <OwlLogo size={340} />
           </div>
           <div className="home__cta-content">
-            <span className="home__eyebrow">Comece hoje</span>
             <h2>Preserve sua própria jornada de leitura.</h2>
             <p>Crie sua conta gratuita e monte sua biblioteca pessoal em poucos minutos — sem custo, sem complicação.</p>
             <Link to={user ? '/inicio' : '/cadastro'} className="home__btn home__btn--gold home__btn--lg">
