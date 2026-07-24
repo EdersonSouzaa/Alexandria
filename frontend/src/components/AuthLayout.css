@@ -80,7 +80,7 @@
 
 .auth-shell__logo {
   display: block;
-  height: 84px;
+  height: clamp(120px, 20vw, 200px);
   width: auto;
   margin-bottom: 4px;
 }
@@ -338,7 +338,7 @@
   }
 
   .auth-shell__logo {
-    height: 56px;
+    height: clamp(80px, 14vw, 110px);
     margin-bottom: 6px;
   }
 
