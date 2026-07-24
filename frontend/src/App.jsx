@@ -18,7 +18,7 @@ const FULL_BLEED_ROUTES = [
 
 function App() {
   const { pathname } = useLocation()
-  const hideNavbar = FULL_BLEED_ROUTES.includes(pathname)
+  const hideNavbar = FULL_BLEED_ROUTES.includes(pathname) || pathname.startsWith('/livros/')
 
   return (
     <>

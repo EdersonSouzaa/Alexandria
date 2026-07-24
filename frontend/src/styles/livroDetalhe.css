@@ -1,53 +1,572 @@
-.livro-detalhe {
+/* ===== Breadcrumbs ===== */
+.dash__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--dash-outline);
+}
+
+.dash__crumbs a:hover {
+  color: var(--dash-primary);
+  text-decoration: underline;
+}
+
+.dash__crumbs svg {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.dash__crumbs-current {
+  color: var(--dash-primary);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+/* ===== Book hero ===== */
+.dash__book-hero {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 40px;
+  grid-template-columns: 300px 1fr;
+  gap: 48px;
   align-items: start;
+  margin-bottom: 56px;
 }
 
-.livro-detalhe__cover img,
-.livro-detalhe__cover-placeholder {
-  width: 100%;
+.dash__book-hero-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dash__book-hero-cover {
+  position: relative;
   aspect-ratio: 2 / 3;
-  border-radius: var(--radius);
-  object-fit: cover;
+  border-radius: var(--dash-radius-md);
+  overflow: hidden;
+  box-shadow: var(--dash-shadow-lg);
+  background: var(--dash-surface-high);
 }
 
-.livro-detalhe__cover-placeholder {
+.dash__book-hero-cover-glow {
+  position: absolute;
+  inset: -18px;
+  border-radius: inherit;
+  background: radial-gradient(closest-side, rgba(173, 138, 69, 0.28), transparent);
+  filter: blur(24px);
+  z-index: -1;
+}
+
+.dash__book-hero-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dash__book-hero-cover-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--light-navy);
-  color: var(--cyan);
-  font-size: 3rem;
-  font-weight: 800;
+  font-family: var(--dash-serif);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--dash-outline);
+  background: var(--dash-surface-high);
 }
 
-.livro-detalhe__meta {
+/* Quick specs */
+.dash__spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.dash__spec-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  padding: 16px 6px;
+  background: var(--dash-surface-lowest);
+  border: 1px solid var(--dash-outline-variant);
+  border-radius: var(--dash-radius-md);
+  box-shadow: var(--dash-shadow-sm);
+  color: var(--dash-tertiary);
+}
+
+.dash__spec-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--dash-outline);
+  margin-top: 2px;
+}
+
+.dash__spec-value {
+  font-family: var(--dash-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--dash-primary);
+}
+
+/* Info column */
+.dash__book-hero-info {
+  min-width: 0;
+}
+
+.dash__book-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0;
-}
-
-.livro-detalhe__acao {
-  margin-top: 24px;
-}
-
-.livro-detalhe__acao h3 {
   margin-bottom: 16px;
 }
 
-.livro-detalhe__acao .row select {
-  flex: 1;
+.dash__tag-pill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(173, 138, 69, 0.14);
+  color: var(--dash-tertiary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-@media (max-width: 700px) {
-  .livro-detalhe {
+.dash__book-hero-title {
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  line-height: 1.15;
+  margin-bottom: 8px;
+  max-width: 640px;
+}
+
+.dash__book-hero-author {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--dash-secondary);
+  margin-bottom: 24px;
+}
+
+.dash__book-hero-desc {
+  background: var(--dash-surface-low);
+  border-radius: var(--dash-radius-md);
+  padding: 20px 22px;
+  margin-bottom: 24px;
+}
+
+.dash__book-hero-desc p {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: var(--dash-on-surface);
+  white-space: pre-wrap;
+}
+
+.dash__book-hero-desc--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dash .dash__book-hero-desc button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--dash-tertiary);
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.dash .dash__book-hero-desc button:hover {
+  text-decoration: underline;
+}
+
+.dash__book-hero-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--dash-outline-variant);
+}
+
+.dash__meta-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--dash-outline);
+  margin-bottom: 4px;
+}
+
+.dash__meta-value {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--dash-primary);
+}
+
+/* Actions */
+.dash__book-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash__hero-status-select select {
+  height: 48px;
+}
+
+.dash .dash__btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: none;
+  background: var(--dash-primary);
+  color: var(--dash-surface);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-shadow: var(--dash-shadow-sm);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.15s ease;
+}
+
+.dash__btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: var(--dash-primary-container);
+}
+
+.dash__btn-primary:disabled {
+  opacity: 0.7;
+  cursor: default;
+  transform: none;
+}
+
+.dash .dash__btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--dash-outline-variant);
+  background: var(--dash-surface-lowest);
+  color: var(--dash-on-surface-variant);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.dash__btn-icon:hover {
+  border-color: var(--dash-tertiary);
+  color: var(--dash-tertiary);
+}
+
+.dash .dash__btn-icon--active {
+  background: rgba(173, 138, 69, 0.14);
+  border-color: var(--dash-tertiary);
+  color: var(--dash-tertiary);
+}
+
+.dash__book-hero-status-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--dash-secondary);
+}
+
+.dash__book-hero-feedback {
+  margin-top: 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--dash-secondary);
+}
+
+@media (max-width: 980px) {
+  .dash__book-hero {
     grid-template-columns: 1fr;
   }
 
-  .livro-detalhe__cover {
-    max-width: 220px;
+  .dash__book-hero-visual {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dash__book-hero-visual {
+    max-width: 200px;
+  }
+
+  .dash__book-hero-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Reviews section (community reviews for this book) ===== */
+.dash__book-reviews {
+  margin-top: 56px;
+}
+
+.dash .dash__btn-primary-sm,
+.dash .dash__btn-ghost-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.dash .dash__btn-primary-sm {
+  border: none;
+  background: var(--dash-primary);
+  color: var(--dash-surface);
+}
+
+.dash__btn-primary-sm:hover:not(:disabled) {
+  background: var(--dash-primary-container);
+}
+
+.dash__btn-primary-sm:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.dash .dash__btn-ghost-sm {
+  border: 1px solid var(--dash-outline-variant);
+  background: transparent;
+  color: var(--dash-on-surface-variant);
+}
+
+.dash__btn-ghost-sm:hover {
+  border-color: var(--dash-outline);
+  color: var(--dash-primary);
+}
+
+.dash__review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--dash-surface-lowest);
+  border: 1px solid var(--dash-outline-variant);
+  border-radius: var(--dash-radius-lg);
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--dash-shadow-sm);
+}
+
+.dash__review-form-textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 14px 16px;
+  border-radius: var(--dash-radius-sm);
+  border: 1px solid var(--dash-outline-variant);
+  background: var(--dash-surface-low);
+  color: var(--dash-on-surface);
+  font-family: inherit;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.dash__review-form-textarea:focus-visible {
+  border-color: var(--dash-tertiary);
+  outline: none;
+}
+
+.dash__review-form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.dash__loading-inline {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+/* Review cards */
+.dash__revcard {
+  background: var(--dash-surface-lowest);
+  border: 1px solid var(--dash-outline-variant);
+  border-radius: var(--dash-radius-lg);
+  padding: 26px 28px;
+  box-shadow: var(--dash-shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dash__revcard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dash-shadow-md);
+}
+
+.dash__revcard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dash__revcard-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dash__revcard-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(155deg, var(--dash-primary) 0%, var(--dash-primary-container) 100%);
+  color: var(--dash-surface);
+  font-weight: 700;
+  font-size: 0.86rem;
+  flex-shrink: 0;
+}
+
+.dash__revcard-who h4 {
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dash__revcard-who p {
+  font-size: 0.76rem;
+  color: var(--dash-outline);
+  margin-top: 1px;
+}
+
+.dash__revcard-you {
+  font-family: var(--font-sans);
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--dash-secondary-container);
+  color: var(--dash-on-secondary-container);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dash .dash__revcard-head .rating-stars {
+  flex-shrink: 0;
+}
+
+.dash__revcard-text {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--dash-on-surface);
+  white-space: pre-wrap;
+  margin-bottom: 18px;
+}
+
+.dash__revcard-foot {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--dash-outline-variant);
+}
+
+.dash .dash__revcard-like,
+.dash__revcard-comment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--dash-outline);
+}
+
+.dash .dash__revcard-like {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: color 0.15s ease;
+}
+
+.dash__revcard-like:hover:not(:disabled) {
+  color: var(--dash-tertiary);
+}
+
+.dash .dash__revcard-like--ativo {
+  color: var(--dash-tertiary);
+}
+
+.dash__revcard-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.dash__revcard-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--dash-outline);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dash__revcard-actions button:hover {
+  background: var(--dash-secondary-container);
+  color: var(--dash-on-secondary-container);
+}
+
+.dash__revcard-actions-danger:hover {
+  background: var(--dash-error-container) !important;
+  color: var(--dash-on-error-container) !important;
+}
+
+@media (max-width: 640px) {
+  .dash__revcard-head {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash__revcard,
+  .dash__btn-primary,
+  .dash__btn-primary-sm,
+  .dash__btn-ghost-sm {
+    transition: none;
   }
 }

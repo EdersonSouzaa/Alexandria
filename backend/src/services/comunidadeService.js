@@ -17,20 +17,28 @@ async function criarPostAutomatico(usuario, livro, avaliacao) {
   await gamificacaoService.postCriado(usuario.id)
 }
 
-async function listarFeed(usuarioIdAtual, pagina, tamanhoPagina) {
+async function listarFeed(usuarioIdAtual, pagina, tamanhoPagina, identificadorExternoLivro) {
+  let where
+  if (identificadorExternoLivro) {
+    const livro = await prisma.livro.findUnique({ where: { identificadorExterno: identificadorExternoLivro } })
+    where = { livroId: livro?.id ?? -1 }
+  }
+
   const [posts, totalElements] = await Promise.all([
     prisma.comunidadePost.findMany({
+      where,
       orderBy: { criadoEm: 'desc' },
       skip: pagina * tamanhoPagina,
       take: tamanhoPagina,
       include: {
         usuario: true,
         livro: true,
+        avaliacao: { select: { nota: true, resenha: true } },
         _count: { select: { curtidas: true, comentarios: true } },
         curtidas: usuarioIdAtual ? { where: { usuarioId: usuarioIdAtual }, select: { id: true } } : false,
       },
     }),
-    prisma.comunidadePost.count(),
+    prisma.comunidadePost.count({ where }),
   ])
 
   const content = posts.map((post) => paraResponse(post))
@@ -68,6 +76,7 @@ async function curtir(usuarioId, postId) {
     include: {
       usuario: true,
       livro: true,
+      avaliacao: { select: { nota: true, resenha: true } },
       _count: { select: { curtidas: true, comentarios: true } },
       curtidas: { where: { usuarioId }, select: { id: true } },
     },
@@ -114,6 +123,9 @@ function paraResponse(post) {
     livroTitulo: post.livro ? post.livro.titulo : null,
     livroCapa: post.livro ? post.livro.capa : null,
     conteudo: post.conteudo,
+    avaliacaoId: post.avaliacaoId,
+    nota: post.avaliacao ? post.avaliacao.nota : null,
+    resenha: post.avaliacao ? post.avaliacao.resenha : null,
     criadoEm: post.criadoEm,
     totalCurtidas: post._count.curtidas,
     totalComentarios: post._count.comentarios,

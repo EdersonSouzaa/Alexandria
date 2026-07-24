@@ -13,7 +13,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const pagina = Number(req.query.pagina ?? 0)
     const tamanhoPagina = Number(req.query.tamanhoPagina ?? 20)
-    res.json(await comunidadeService.listarFeed(req.usuarioId, pagina, tamanhoPagina))
+    res.json(await comunidadeService.listarFeed(req.usuarioId, pagina, tamanhoPagina, req.query.livro))
   }),
 )
 
