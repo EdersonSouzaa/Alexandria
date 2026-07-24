@@ -836,44 +836,75 @@
 
 /* ===== Footer ===== */
 .home__footer {
+  position: relative;
   background: var(--home-primary);
   color: var(--home-surface);
+  overflow: hidden;
+}
+
+.home__footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 222, 165, 0.5), transparent);
 }
 
 .home__footer-inner {
+  position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 64px 32px 40px;
+  padding: 72px 32px 48px;
   display: flex;
   justify-content: space-between;
-  gap: 48px;
+  gap: 64px;
   flex-wrap: wrap;
 }
 
 .home__footer-brand-col {
-  max-width: 300px;
+  max-width: 320px;
 }
 
-.home__footer-brand-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  border-radius: var(--home-radius-md);
-  background: var(--home-surface);
-  box-shadow: var(--home-shadow-sm);
+.home__footer-wordmark {
+  display: inline-block;
+  font-family: var(--home-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--home-surface);
   margin-bottom: 14px;
-}
-
-.home__footer-brand-logo {
-  display: block;
-  height: 40px;
-  width: auto;
 }
 
 .home__footer-tagline {
   font-size: 0.88rem;
   line-height: 1.6;
   color: rgba(254, 249, 237, 0.65);
+  margin-bottom: 28px;
+}
+
+.home__footer-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home__footer-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.home__footer-stat strong {
+  font-family: var(--home-serif);
+  font-size: 1.05rem;
+  color: var(--home-tertiary-container);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.home__footer-stat span {
+  font-size: 0.78rem;
+  color: rgba(254, 249, 237, 0.55);
 }
 
 .home__footer-cols {
@@ -912,6 +943,7 @@
 }
 
 .home__footer-bottom {
+  position: relative;
   border-top: 1px solid rgba(254, 249, 237, 0.12);
 }
 
@@ -926,6 +958,10 @@
   flex-wrap: wrap;
   font-size: 0.8rem;
   color: rgba(254, 249, 237, 0.5);
+}
+
+.home__footer-bottom-note {
+  color: rgba(254, 249, 237, 0.4);
 }
 
 /* ===== Responsive ===== */

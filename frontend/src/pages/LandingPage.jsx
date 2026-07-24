@@ -451,12 +451,19 @@ export default function LandingPage() {
       <footer className="home__footer">
         <div className="home__footer-inner">
           <div className="home__footer-brand-col">
-            <span className="home__footer-brand-chip">
-              <img src={logo} alt="Alexandria" className="home__footer-brand-logo" />
-            </span>
+            <span className="home__footer-wordmark">Alexandria</span>
             <p className="home__footer-tagline">
               Dedicada à organização e à celebração da leitura, uma estante digital de cada vez.
             </p>
+
+            <div className="home__footer-stats">
+              {estatisticas.map((item) => (
+                <div className="home__footer-stat" key={item.rotulo}>
+                  <strong>{item.valor}</strong>
+                  <span>{item.rotulo}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="home__footer-cols">
@@ -471,6 +478,9 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <Link to="/conquistas">Conquistas</Link>
+                </li>
+                <li>
+                  <a href="#sobre">Sobre nós</a>
                 </li>
               </ul>
             </div>
@@ -488,12 +498,31 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
+            <div className="home__footer-col">
+              <h5>Suporte</h5>
+              <ul>
+                {!user && (
+                  <li>
+                    <Link to="/login">Entrar</Link>
+                  </li>
+                )}
+                <li>
+                  <Link to="/esqueci-senha">Esqueci minha senha</Link>
+                </li>
+                {!user && (
+                  <li>
+                    <Link to="/cadastro">Criar conta grátis</Link>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         </div>
 
         <div className="home__footer-bottom">
           <div className="home__footer-bottom-inner">
             <span>© {new Date().getFullYear()} Alexandria. Todos os direitos reservados.</span>
+            <span className="home__footer-bottom-note">Feito com carinho para leitores.</span>
           </div>
         </div>
       </footer>
