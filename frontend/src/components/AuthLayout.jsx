@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
-import { IconEstrela } from './AuthIcons'
 import './AuthLayout.css'
 
 export default function AuthLayout({ active, title, subtitle, children }) {
@@ -38,15 +37,6 @@ export default function AuthLayout({ active, title, subtitle, children }) {
             {subtitle && <p className="auth-shell__subtitle">{subtitle}</p>}
 
             {children}
-          </div>
-
-          <div className="auth-shell__deco">
-            <div className="auth-shell__stars" aria-hidden="true">
-              <IconEstrela />
-              <IconEstrela />
-              <IconEstrela />
-            </div>
-            <p>ALEXANDRIA · EST. MMXXIV</p>
           </div>
         </div>
       </main>
