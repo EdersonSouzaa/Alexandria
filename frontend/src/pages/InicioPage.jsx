@@ -361,7 +361,7 @@ export default function InicioPage() {
                 feed.content.map((post) => (
                   <Link to="/comunidade" className="dash__feed-item" key={post.id}>
                     <span className="dash__feed-avatar">{iniciais(post.autorNome)}</span>
-                    <span>
+                    <span className="dash__feed-text">
                       <strong>{post.autorNome}</strong>
                       <p>{descricaoPost(post)}</p>
                     </span>

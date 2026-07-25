@@ -153,6 +153,7 @@
   padding: 26px;
   color: var(--dash-surface);
   box-shadow: var(--dash-shadow-md);
+  margin-bottom: 24px;
 }
 
 .dash__level-top {
@@ -284,6 +285,11 @@
   flex-shrink: 0;
 }
 
+.dash__feed-text {
+  min-width: 0;
+  flex: 1;
+}
+
 .dash__feed-item strong {
   display: block;
   color: var(--dash-primary);
@@ -294,9 +300,11 @@
   font-size: 0.82rem;
   color: var(--dash-outline);
   margin-top: 2px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-word;
 }
 
 .dash__empty-inline {
