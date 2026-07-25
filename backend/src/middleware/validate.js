@@ -15,4 +15,24 @@ function validateBody(schema) {
   }
 }
 
-module.exports = { validateBody }
+function requireNumericId(paramName = 'id') {
+  return (req, res, next) => {
+    const valor = req.params[paramName]
+    if (!/^\d+$/.test(valor)) {
+      return next(new ValidationError({ [paramName]: 'Identificador inválido.' }))
+    }
+    next()
+  }
+}
+
+function requireOpenLibraryId(paramName = 'id') {
+  return (req, res, next) => {
+    const valor = req.params[paramName]
+    if (typeof valor !== 'string' || valor.length > 64 || !/^OL\d+W$/.test(valor)) {
+      return next(new ValidationError({ [paramName]: 'Identificador de livro inválido.' }))
+    }
+    next()
+  }
+}
+
+module.exports = { validateBody, requireNumericId, requireOpenLibraryId }

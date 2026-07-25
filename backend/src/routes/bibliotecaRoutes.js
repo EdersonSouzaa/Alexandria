@@ -1,7 +1,7 @@
 const express = require('express')
 const bibliotecaService = require('../services/bibliotecaService')
 const { requireAuth } = require('../middleware/auth')
-const { validateBody } = require('../middleware/validate')
+const { validateBody, requireNumericId } = require('../middleware/validate')
 const { asyncHandler } = require('../lib/asyncHandler')
 const { adicionarLivroSchema, atualizarStatusSchema } = require('../schemas/bibliotecaSchemas')
 
@@ -31,6 +31,7 @@ router.get(
 
 router.patch(
   '/:id/status',
+  requireNumericId(),
   validateBody(atualizarStatusSchema),
   asyncHandler(async (req, res) => {
     res.json(await bibliotecaService.atualizarStatus(req.usuarioId, Number(req.params.id), req.body.statusLeitura))
@@ -39,6 +40,7 @@ router.patch(
 
 router.patch(
   '/:id/favorito',
+  requireNumericId(),
   asyncHandler(async (req, res) => {
     res.json(await bibliotecaService.alternarFavorito(req.usuarioId, Number(req.params.id)))
   }),
@@ -46,6 +48,7 @@ router.patch(
 
 router.delete(
   '/:id',
+  requireNumericId(),
   asyncHandler(async (req, res) => {
     await bibliotecaService.remover(req.usuarioId, Number(req.params.id))
     res.status(204).send()

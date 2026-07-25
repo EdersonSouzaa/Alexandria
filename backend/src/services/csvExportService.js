@@ -1,8 +1,9 @@
+const { escapeCsvField } = require('../lib/sanitize')
+
 const CABECALHO = ['Livro', 'Autor', 'Nota', 'Resenha', 'Data']
 
 function campo(valor) {
-  if (valor === null || valor === undefined) return ''
-  return `"${String(valor).replace(/"/g, '""')}"`
+  return escapeCsvField(valor)
 }
 
 function exportarAvaliacoes(avaliacoes) {

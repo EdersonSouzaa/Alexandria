@@ -2,6 +2,7 @@ const express = require('express')
 const authService = require('../services/authService')
 const { requireAuth } = require('../middleware/auth')
 const { validateBody } = require('../middleware/validate')
+const { authLimiter } = require('../middleware/rateLimit')
 const { asyncHandler } = require('../lib/asyncHandler')
 const {
   registerSchema,
@@ -15,6 +16,7 @@ const router = express.Router()
 
 router.post(
   '/register',
+  authLimiter,
   validateBody(registerSchema),
   asyncHandler(async (req, res) => {
     res.json(await authService.register(req.body))
@@ -23,6 +25,7 @@ router.post(
 
 router.post(
   '/login',
+  authLimiter,
   validateBody(loginSchema),
   asyncHandler(async (req, res) => {
     res.json(await authService.login(req.body))
@@ -48,6 +51,7 @@ router.put(
 
 router.post(
   '/forgot-password',
+  authLimiter,
   validateBody(forgotPasswordSchema),
   asyncHandler(async (req, res) => {
     res.json(await authService.forgotPassword(req.body))
@@ -56,6 +60,7 @@ router.post(
 
 router.post(
   '/reset-password',
+  authLimiter,
   validateBody(resetPasswordSchema),
   asyncHandler(async (req, res) => {
     await authService.resetPassword(req.body)

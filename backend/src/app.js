@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const cors = require('cors')
+const helmet = require('helmet')
 
 const authRoutes = require('./routes/authRoutes')
 const livroRoutes = require('./routes/livroRoutes')
@@ -11,8 +12,15 @@ const comunidadeRoutes = require('./routes/comunidadeRoutes')
 const gamificacaoRoutes = require('./routes/gamificacaoRoutes')
 const healthRoutes = require('./routes/healthRoutes')
 const { errorHandler } = require('./middleware/errorHandler')
+const { apiLimiter } = require('./middleware/rateLimit')
 
 const app = express()
+
+// A aplicação roda atrás do proxy reverso da Railway; sem isso, o rate
+// limiter enxergaria o IP do proxy em vez do IP real do cliente.
+app.set('trust proxy', 1)
+
+app.use(helmet())
 
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
@@ -35,7 +43,8 @@ app.use(
     exposedHeaders: ['Content-Disposition'],
   }),
 )
-app.use(express.json())
+app.use(express.json({ limit: '100kb' }))
+app.use('/api', apiLimiter)
 
 app.use('/api/health', healthRoutes)
 app.use('/api/auth', authRoutes)

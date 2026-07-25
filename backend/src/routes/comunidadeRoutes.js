@@ -1,7 +1,7 @@
 const express = require('express')
 const comunidadeService = require('../services/comunidadeService')
 const { requireAuth } = require('../middleware/auth')
-const { validateBody } = require('../middleware/validate')
+const { validateBody, requireNumericId } = require('../middleware/validate')
 const { asyncHandler } = require('../lib/asyncHandler')
 const { comentarioSchema } = require('../schemas/comunidadeSchemas')
 
@@ -19,6 +19,7 @@ router.get(
 
 router.post(
   '/:id/curtir',
+  requireNumericId(),
   asyncHandler(async (req, res) => {
     res.json(await comunidadeService.curtir(req.usuarioId, Number(req.params.id)))
   }),
@@ -26,6 +27,7 @@ router.post(
 
 router.get(
   '/:id/comentarios',
+  requireNumericId(),
   asyncHandler(async (req, res) => {
     res.json(await comunidadeService.listarComentarios(Number(req.params.id)))
   }),
@@ -33,6 +35,7 @@ router.get(
 
 router.post(
   '/:id/comentarios',
+  requireNumericId(),
   validateBody(comentarioSchema),
   asyncHandler(async (req, res) => {
     res.json(await comunidadeService.comentar(req.usuarioId, Number(req.params.id), req.body))

@@ -1,6 +1,7 @@
 const express = require('express')
 const livroService = require('../services/livroService')
 const { requireAuth } = require('../middleware/auth')
+const { requireOpenLibraryId } = require('../middleware/validate')
 const { asyncHandler } = require('../lib/asyncHandler')
 
 const router = express.Router()
@@ -33,6 +34,7 @@ router.get(
 
 router.get(
   '/openlibrary/:id',
+  requireOpenLibraryId(),
   asyncHandler(async (req, res) => {
     res.json(await livroService.detalhar(req.params.id))
   }),

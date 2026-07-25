@@ -1,7 +1,7 @@
 const express = require('express')
 const avaliacaoService = require('../services/avaliacaoService')
 const { requireAuth } = require('../middleware/auth')
-const { validateBody } = require('../middleware/validate')
+const { validateBody, requireNumericId } = require('../middleware/validate')
 const { asyncHandler } = require('../lib/asyncHandler')
 const { criarAvaliacaoSchema, atualizarAvaliacaoSchema } = require('../schemas/avaliacaoSchemas')
 
@@ -35,6 +35,7 @@ router.get(
 
 router.put(
   '/:id',
+  requireNumericId(),
   validateBody(atualizarAvaliacaoSchema),
   asyncHandler(async (req, res) => {
     res.json(await avaliacaoService.atualizar(req.usuarioId, Number(req.params.id), req.body))
@@ -43,6 +44,7 @@ router.put(
 
 router.delete(
   '/:id',
+  requireNumericId(),
   asyncHandler(async (req, res) => {
     await avaliacaoService.remover(req.usuarioId, Number(req.params.id))
     res.status(204).send()
