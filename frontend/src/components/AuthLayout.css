@@ -283,6 +283,32 @@
   color: #93000a;
 }
 
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 14px;
+  color: var(--auth-outline);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--auth-outline-variant);
+}
+
+.auth-google__btn {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
 .auth-split__footer {
   margin-top: 14px;
   padding-top: 14px;

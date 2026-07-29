@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import AuthLayout from '../components/AuthLayout'
+import GoogleAuthButton from '../components/GoogleAuthButton'
 import { IconMail, IconChave, IconOlho, IconOlhoFechado } from '../components/AuthIcons'
 import '../styles/auth.css'
 
 export default function LoginPage() {
-  const { login } = useAuth()
+  const { login, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -18,20 +19,45 @@ export default function LoginPage() {
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
+  function irParaDestino() {
+    const destino = location.state?.from?.pathname ?? '/inicio'
+    navigate(destino, { replace: true })
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
     setErro('')
     setCarregando(true)
     try {
       await login(email, password)
-      const destino = location.state?.from?.pathname ?? '/inicio'
-      navigate(destino, { replace: true })
+      irParaDestino()
     } catch (error) {
       setErro(error.response?.data?.mensagem ?? 'Não foi possível entrar. Verifique suas credenciais.')
     } finally {
       setCarregando(false)
     }
   }
+
+  const handleGoogleCredential = useCallback(
+    async (credential) => {
+      setErro('')
+      setCarregando(true)
+      try {
+        await loginWithGoogle(credential)
+        irParaDestino()
+      } catch (error) {
+        setErro(error.response?.data?.mensagem ?? 'Não foi possível entrar com o Google.')
+      } finally {
+        setCarregando(false)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loginWithGoogle],
+  )
+
+  const handleGoogleError = useCallback(() => {
+    setErro('Não foi possível carregar o login com o Google.')
+  }, [])
 
   return (
     <AuthLayout active="login" title="Bem-vindo de volta" subtitle="Entre para continuar sua jornada de leitura.">
@@ -78,6 +104,10 @@ export default function LoginPage() {
           Entrar
         </Button>
       </form>
+
+      <div className="auth-divider">ou</div>
+
+      <GoogleAuthButton onCredential={handleGoogleCredential} onError={handleGoogleError} text="signin_with" />
 
       <p className="auth-split__footer">
         Ainda não tem conta? <Link to="/cadastro">Criar conta</Link>

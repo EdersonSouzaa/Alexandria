@@ -20,6 +20,7 @@ ALEXANDRIA é um "Goodreads" pessoal, gratuito e em português: um lugar para or
 
 ### Conta e autenticação
 - Cadastro e login de usuários com autenticação via JWT (token stateless, expira em 24h).
+- Login/cadastro com o Google (Google Identity Services) nas telas de entrar e criar conta. O frontend só recebe o token opaco do Google e o backend é quem verifica assinatura, emissor, audiência e expiração (`google-auth-library`) antes de autenticar — nenhum dado de perfil vindo do cliente é usado sem essa verificação. Contas existentes com o mesmo e-mail (já verificado pelo Google) são vinculadas automaticamente em vez de duplicadas; contas criadas só pelo Google não têm senha local até o usuário definir uma (ex.: via "esqueci minha senha").
 - Recuperação de senha por token temporário (esqueci a senha / redefinir senha). Em ambiente de desenvolvimento, sem provedor de e-mail configurado, o token é retornado na resposta da API e logado no backend — ver `backend/.env.example`.
 - Perfil do usuário com consulta e edição de dados.
 - Isolamento total de dados entre contas diferentes (cada usuário só acessa seus próprios registros).
@@ -227,9 +228,17 @@ PORT=8080
 DATABASE_URL=postgresql://postgres:sua_senha_local@localhost:5432/alexandria_web?schema=public
 JWT_SECRET=troque_por_uma_chave_forte_com_no_minimo_32_caracteres
 FRONTEND_URL=http://localhost:5173
+GOOGLE_CLIENT_ID=seu-client-id.apps.googleusercontent.com
 ```
 
 > Se sua senha do Postgres tiver caracteres especiais (`@`, `!`, `#`...), faça o *URL encode* deles na `DATABASE_URL` (ex.: `@` vira `%40`).
+
+**Obtendo o `GOOGLE_CLIENT_ID`** (necessário para o botão "Entrar com o Google" funcionar):
+1. Acesse o [Google Cloud Console](https://console.cloud.google.com/apis/credentials) e crie um projeto (ou use um existente).
+2. Configure a "Tela de consentimento OAuth" (tipo Externo é suficiente para testes).
+3. Em "Credenciais" → "Criar credenciais" → "ID do cliente OAuth", escolha o tipo **Aplicativo da Web**.
+4. Em "Origens JavaScript autorizadas", adicione as URLs do frontend (ex.: `http://localhost:5173` e a URL de produção).
+5. Copie o Client ID gerado e use o **mesmo valor** em `backend/.env` (`GOOGLE_CLIENT_ID`) e em `frontend/.env.local` (`VITE_GOOGLE_CLIENT_ID`) — o backend usa esse valor para validar que o token recebido foi realmente emitido para esta aplicação.
 
 Crie o banco `alexandria_web` no seu PostgreSQL local antes de subir a aplicação, depois instale as dependências e aplique as migrações do Prisma:
 
@@ -258,6 +267,7 @@ Crie `frontend/.env.local` com a URL da API:
 
 ```env
 VITE_API_URL=http://localhost:8080
+VITE_GOOGLE_CLIENT_ID=seu-client-id.apps.googleusercontent.com
 ```
 
 Instale as dependências e rode:
@@ -290,12 +300,14 @@ npm run build
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `FRONTEND_URL` (aceita múltiplas origens separadas por vírgula, ex.: `https://seu-app.vercel.app,https://seu-app-git-main-time.vercel.app`)
+- `GOOGLE_CLIENT_ID`
 
 O comando de start (`npm start`) roda `prisma migrate deploy` antes de subir o servidor, aplicando migrações pendentes automaticamente no deploy.
 
 ### Frontend
 
 - `VITE_API_URL`
+- `VITE_GOOGLE_CLIENT_ID`
 
 Importante: chaves reais, senhas e segredos devem ficar apenas nas variáveis de ambiente da Railway ou em arquivos locais ignorados pelo Git.
 

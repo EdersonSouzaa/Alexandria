@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import AuthLayout from '../components/AuthLayout'
+import GoogleAuthButton from '../components/GoogleAuthButton'
 import { IconUsuario, IconMail, IconChave, IconOlho, IconOlhoFechado } from '../components/AuthIcons'
 import '../styles/auth.css'
 
 export default function RegisterPage() {
-  const { register } = useAuth()
+  const { register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
@@ -31,6 +32,27 @@ export default function RegisterPage() {
       setCarregando(false)
     }
   }
+
+  const handleGoogleCredential = useCallback(
+    async (credential) => {
+      setErro('')
+      setCarregando(true)
+      try {
+        await loginWithGoogle(credential)
+        navigate('/inicio', { replace: true, state: { cadastroSucesso: true } })
+      } catch (error) {
+        setErro(error.response?.data?.mensagem ?? 'Não foi possível criar sua conta com o Google.')
+      } finally {
+        setCarregando(false)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loginWithGoogle],
+  )
+
+  const handleGoogleError = useCallback(() => {
+    setErro('Não foi possível carregar o cadastro com o Google.')
+  }, [])
 
   return (
     <AuthLayout active="register" title="Comece sua jornada" subtitle="Crie sua conta gratuita e monte sua estante pessoal.">
@@ -84,6 +106,10 @@ export default function RegisterPage() {
           Criar conta
         </Button>
       </form>
+
+      <div className="auth-divider">ou</div>
+
+      <GoogleAuthButton onCredential={handleGoogleCredential} onError={handleGoogleError} text="signup_with" />
 
       <p className="auth-split__footer">
         Já tem conta? <Link to="/login">Entrar</Link>

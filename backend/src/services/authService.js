@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const crypto = require('node:crypto')
 const prisma = require('../lib/prisma')
 const { generateToken } = require('../lib/jwt')
+const { verifyGoogleIdToken } = require('../lib/googleAuth')
+const { sanitizeText } = require('../lib/sanitize')
 const { DuplicateError, InvalidCredentialsError, NotFoundError } = require('../lib/errors')
 
 async function register({ name, email, password }) {
@@ -24,13 +26,49 @@ async function register({ name, email, password }) {
 
 async function login({ email, password }) {
   const user = await prisma.user.findUnique({ where: { email } })
-  if (!user) {
+  // Contas criadas via Google não têm senha local; a mensagem permanece
+  // genérica para não revelar se o e-mail existe ou como a conta foi criada.
+  if (!user || !user.password) {
     throw new InvalidCredentialsError('E-mail ou senha inválidos.')
   }
 
   const senhaValida = await bcrypt.compare(password, user.password)
   if (!senhaValida) {
     throw new InvalidCredentialsError('E-mail ou senha inválidos.')
+  }
+
+  const token = generateToken(user.id, user.email)
+  return { token, id: user.id, name: user.name, email: user.email }
+}
+
+async function loginWithGoogle({ credential }) {
+  let payload
+  try {
+    payload = await verifyGoogleIdToken(credential)
+  } catch {
+    throw new InvalidCredentialsError('Não foi possível verificar sua conta Google.')
+  }
+
+  const { googleId, email, name } = payload
+
+  let user = await prisma.user.findUnique({ where: { googleId } })
+
+  if (!user) {
+    const existente = await prisma.user.findUnique({ where: { email } })
+
+    if (existente) {
+      // E-mail já verificado pelo Google: vincula a conta local existente
+      // em vez de criar um duplicado.
+      user = await prisma.user.update({ where: { id: existente.id }, data: { googleId } })
+    } else {
+      user = await prisma.$transaction(async (tx) => {
+        const created = await tx.user.create({
+          data: { name: sanitizeText(name), email, googleId, password: null },
+        })
+        await tx.gamificacao.create({ data: { usuarioId: created.id } })
+        return created
+      })
+    }
   }
 
   const token = generateToken(user.id, user.email)
@@ -109,4 +147,12 @@ function toProfileResponse(user) {
   return { id: user.id, name: user.name, email: user.email, criadoEm: user.criadoEm }
 }
 
-module.exports = { register, login, getProfile, updateProfile, forgotPassword, resetPassword }
+module.exports = {
+  register,
+  login,
+  loginWithGoogle,
+  getProfile,
+  updateProfile,
+  forgotPassword,
+  resetPassword,
+}
