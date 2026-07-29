@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useGamificacao } from '../context/GamificacaoContext'
 import { bibliotecaService } from '../services/bibliotecaService'
 import { comunidadeService } from '../services/comunidadeService'
 import DashboardShell from '../components/DashboardShell'
 import HeroCover from '../components/HeroCover'
+import WelcomeModal from '../components/WelcomeModal'
 import { IconBusca, IconEstante, IconPessoas, IconEstrela, IconTrofeu, iniciais } from '../components/DashboardIcons'
 import { tituloAtual } from '../components/AchievementIcons'
 import '../styles/dashboard.css'
@@ -85,14 +87,17 @@ function LivroTile({ item, index }) {
 }
 
 export default function InicioPage() {
-  const { status, refresh } = useGamificacao()
+  const { status } = useGamificacao()
+  const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [itens, setItens] = useState([])
   const [feed, setFeed] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [termoBusca, setTermoBusca] = useState('')
+  const [mostrarBoasVindas, setMostrarBoasVindas] = useState(Boolean(location.state?.cadastroSucesso))
 
   useEffect(() => {
     async function carregar() {
@@ -112,7 +117,12 @@ export default function InicioPage() {
       }
     }
     carregar()
-    refresh()
+  }, [])
+
+  useEffect(() => {
+    if (location.state?.cadastroSucesso) {
+      navigate(location.pathname, { replace: true, state: {} })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -124,6 +134,7 @@ export default function InicioPage() {
   if (carregando && !feed) {
     return (
       <div className="dash">
+        <WelcomeModal visible={mostrarBoasVindas} nome={user?.name} onClose={() => setMostrarBoasVindas(false)} />
         <div className="dash__loading">
           <span className="dash__spinner" />
           <span>Preparando sua estante…</span>
@@ -148,6 +159,7 @@ export default function InicioPage() {
 
   return (
     <div className="dash">
+      <WelcomeModal visible={mostrarBoasVindas} nome={user?.name} onClose={() => setMostrarBoasVindas(false)} />
       <DashboardShell
         active="/inicio"
         searchValue={termoBusca}
