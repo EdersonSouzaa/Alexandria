@@ -37,6 +37,22 @@ function paraResumo(doc) {
   }
 }
 
+async function numeroDePaginas(workId) {
+  try {
+    const params = new URLSearchParams({
+      q: `key:/works/${workId}`,
+      fields: 'number_of_pages_median',
+      limit: '1',
+    })
+    const response = await fetch(`${BASE_URL}/search.json?${params}`, { headers: headers() })
+    if (!response.ok) return null
+    const data = await response.json()
+    return data.docs?.[0]?.number_of_pages_median ?? null
+  } catch {
+    return null
+  }
+}
+
 async function nomesAutores(authors) {
   if (!authors || authors.length === 0) return null
 
@@ -118,16 +134,18 @@ async function detalhar(workId) {
     const coverId = work.covers ? work.covers.find((c) => c > 0) : null
     const descricao = typeof work.description === 'string' ? work.description : (work.description?.value ?? null)
 
+    const [autor, numeroPaginas] = await Promise.all([nomesAutores(work.authors), numeroDePaginas(workId)])
+
     return {
       identificadorExterno: workId,
       titulo: work.title,
-      autor: await nomesAutores(work.authors),
+      autor,
       descricao,
       capa: capaPorId(coverId),
       editora: null,
       dataPublicacao: work.first_publish_date ?? null,
       categoria: work.subjects && work.subjects.length > 0 ? work.subjects[0] : null,
-      numeroPaginas: null,
+      numeroPaginas,
     }
   })
 }
