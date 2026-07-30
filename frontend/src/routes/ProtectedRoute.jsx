@@ -1,13 +1,23 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import LoadingSpinner from '../components/LoadingSpinner'
+import DashboardShell from '../components/DashboardShell'
+import { PageHeadSkeleton, StatsSkeleton, BookGridSkeleton } from '../components/Skeleton'
+import '../styles/dashboard.css'
 
 export default function ProtectedRoute() {
   const { user, loading } = useAuth()
   const location = useLocation()
 
   if (loading) {
-    return <LoadingSpinner label="Verificando sua sessão…" />
+    return (
+      <div className="dash">
+        <DashboardShell active={location.pathname}>
+          <PageHeadSkeleton withFilters={false} />
+          <StatsSkeleton count={4} />
+          <BookGridSkeleton count={8} />
+        </DashboardShell>
+      </div>
+    )
   }
 
   if (!user) {

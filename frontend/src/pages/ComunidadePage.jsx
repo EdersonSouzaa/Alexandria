@@ -6,6 +6,7 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import Pagination from '../components/Pagination'
 import DashboardShell from '../components/DashboardShell'
+import { PageHeadSkeleton, PostsSkeleton } from '../components/Skeleton'
 import { iniciais } from '../components/DashboardIcons'
 import '../styles/dashboard.css'
 import '../styles/comunidade.css'
@@ -117,10 +118,16 @@ export default function ComunidadePage() {
   if (carregando && !feed) {
     return (
       <div className="dash">
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Carregando o feed…</span>
-        </div>
+        <DashboardShell
+          active="/comunidade"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Buscar na sua biblioteca…"
+        >
+          <PageHeadSkeleton withFilters={false} />
+          <PostsSkeleton count={4} />
+        </DashboardShell>
       </div>
     )
   }

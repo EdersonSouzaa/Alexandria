@@ -405,12 +405,6 @@
   gap: 12px;
 }
 
-.dash__loading-inline {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-}
-
 /* Review cards */
 .dash__revcard {
   background: var(--dash-surface-lowest);

@@ -7,6 +7,7 @@ import Input from '../components/Input'
 import Button from '../components/Button'
 import DashboardShell from '../components/DashboardShell'
 import { iniciais } from '../components/DashboardIcons'
+import { BookGridSkeleton } from '../components/Skeleton'
 import { ICONES_CONQUISTA, ICONES_HISTORICO, IconCadeado, IconTrofeu, tituloAtual } from '../components/AchievementIcons'
 import '../styles/dashboard.css'
 import '../styles/book-grid.css'
@@ -183,7 +184,9 @@ export default function PerfilPage() {
                 Ver estante →
               </Link>
             </div>
-            {!carregandoFavoritos && favoritos.length === 0 ? (
+            {carregandoFavoritos ? (
+              <BookGridSkeleton count={6} compact />
+            ) : favoritos.length === 0 ? (
               <div className="dash__empty">
                 Você ainda não marcou nenhum livro como favorito.{' '}
                 <Link to="/biblioteca">Marque seus preferidos</Link> para exibi-los aqui.

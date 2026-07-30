@@ -4,6 +4,7 @@ import { livroService } from '../services/livroService'
 import { bibliotecaService } from '../services/bibliotecaService'
 import Pagination from '../components/Pagination'
 import DashboardShell from '../components/DashboardShell'
+import { BookGridSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/book-grid.css'
 
@@ -163,12 +164,7 @@ export default function ExplorarPage() {
           </div>
         </div>
 
-        {carregando && (
-          <div className="dash__loading">
-            <span className="dash__spinner" />
-            <span>Buscando livros…</span>
-          </div>
-        )}
+        {carregando && <BookGridSkeleton count={12} />}
 
         {!carregando && erro && <div className="dash__error">{erro}</div>}
 

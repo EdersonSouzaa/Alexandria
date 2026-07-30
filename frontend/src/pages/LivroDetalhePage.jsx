@@ -9,6 +9,7 @@ import { useGamificacao } from '../context/GamificacaoContext'
 import DashboardShell from '../components/DashboardShell'
 import RatingStars from '../components/RatingStars'
 import { iniciais } from '../components/DashboardIcons'
+import { CrumbsSkeleton, BookHeroSkeleton, RevCardsSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/avaliacoes.css'
 import '../styles/livroDetalhe.css'
@@ -369,10 +370,16 @@ export default function LivroDetalhePage() {
   if (carregando) {
     return (
       <div className="dash">
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Carregando livro…</span>
-        </div>
+        <DashboardShell
+          active="/livros"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Título, autor ou assunto…"
+        >
+          <CrumbsSkeleton />
+          <BookHeroSkeleton />
+        </DashboardShell>
       </div>
     )
   }
@@ -577,9 +584,7 @@ export default function LivroDetalhePage() {
           )}
 
           {carregandoAvaliacoes ? (
-            <div className="dash__loading-inline">
-              <span className="dash__spinner" />
-            </div>
+            <RevCardsSkeleton count={2} />
           ) : avaliacoes.length === 0 ? (
             !mostrarForm && <div className="dash__empty">Nenhuma avaliação ainda. Seja a primeira pessoa a avaliar este livro.</div>
           ) : (

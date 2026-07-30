@@ -7,6 +7,7 @@ import { comunidadeService } from '../services/comunidadeService'
 import DashboardShell from '../components/DashboardShell'
 import HeroCover from '../components/HeroCover'
 import WelcomeModal from '../components/WelcomeModal'
+import { HeroSkeleton, QuickCardsSkeleton, ShelfSkeleton, LevelCardSkeleton, FeedListSkeleton } from '../components/Skeleton'
 import { IconBusca, IconEstante, IconPessoas, IconEstrela, IconTrofeu, iniciais } from '../components/DashboardIcons'
 import { tituloAtual } from '../components/AchievementIcons'
 import '../styles/dashboard.css'
@@ -135,10 +136,32 @@ export default function InicioPage() {
     return (
       <div className="dash">
         <WelcomeModal visible={mostrarBoasVindas} nome={user?.name} onClose={() => setMostrarBoasVindas(false)} />
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Preparando sua estante…</span>
-        </div>
+        <DashboardShell
+          active="/inicio"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Buscar na sua biblioteca…"
+        >
+          <HeroSkeleton />
+          <QuickCardsSkeleton />
+          <div className="dash__layout">
+            <div>
+              <section className="dash__section">
+                <ShelfSkeleton count={3} />
+              </section>
+              <section className="dash__section">
+                <ShelfSkeleton count={4} />
+              </section>
+            </div>
+            <aside>
+              <LevelCardSkeleton />
+              <div className="dash__card">
+                <FeedListSkeleton />
+              </div>
+            </aside>
+          </div>
+        </DashboardShell>
       </div>
     )
   }

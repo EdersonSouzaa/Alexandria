@@ -5,6 +5,7 @@ import RatingStars from '../components/RatingStars'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import DashboardShell from '../components/DashboardShell'
+import { PageHeadSkeleton, StatsSkeleton, ReviewsSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/avaliacoes.css'
 
@@ -151,10 +152,17 @@ export default function MinhasAvaliacoesPage() {
   if (carregando && avaliacoes.length === 0) {
     return (
       <div className="dash">
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Carregando suas avaliações…</span>
-        </div>
+        <DashboardShell
+          active="/avaliacoes"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Buscar na sua biblioteca…"
+        >
+          <PageHeadSkeleton />
+          <StatsSkeleton count={3} />
+          <ReviewsSkeleton count={3} />
+        </DashboardShell>
       </div>
     )
   }

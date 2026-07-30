@@ -5,6 +5,7 @@ import { useGamificacao } from '../context/GamificacaoContext'
 import DashboardShell from '../components/DashboardShell'
 import HeroCover from '../components/HeroCover'
 import { IconEstrela } from '../components/DashboardIcons'
+import { HeroSkeleton, StatsSkeleton, PageHeadSkeleton, BookGridSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/book-grid.css'
 
@@ -161,10 +162,20 @@ export default function MinhaBibliotecaPage() {
   if (carregando && itens.length === 0) {
     return (
       <div className="dash">
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Carregando sua biblioteca…</span>
-        </div>
+        <DashboardShell
+          active="/biblioteca"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Buscar na sua biblioteca…"
+        >
+          <HeroSkeleton />
+          <div style={{ marginTop: 32 }}>
+            <StatsSkeleton count={5} />
+          </div>
+          <PageHeadSkeleton withFilters={false} />
+          <BookGridSkeleton count={10} />
+        </DashboardShell>
       </div>
     )
   }

@@ -10,6 +10,7 @@ import {
   tituloAtual,
   proximoTitulo,
 } from '../components/AchievementIcons'
+import { PageHeadSkeleton, LevelHeroSkeleton, StatsSkeleton, BadgesSkeleton, TimelineSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/conquistas.css'
 
@@ -62,10 +63,22 @@ export default function ConquistasPage() {
   if (loading && !status) {
     return (
       <div className="dash">
-        <div className="dash__loading">
-          <span className="dash__spinner" />
-          <span>Carregando sua jornada…</span>
-        </div>
+        <DashboardShell
+          active="/conquistas"
+          searchValue={termoBusca}
+          onSearchChange={setTermoBusca}
+          onSearchSubmit={handleBuscar}
+          searchPlaceholder="Buscar na sua biblioteca…"
+        >
+          <PageHeadSkeleton withFilters={false} />
+          <LevelHeroSkeleton />
+          <h2 className="dash__section-title">Estatísticas</h2>
+          <StatsSkeleton count={8} wide />
+          <h2 className="dash__section-title">Conquistas</h2>
+          <BadgesSkeleton count={8} />
+          <h2 className="dash__section-title">Histórico recente</h2>
+          <TimelineSkeleton count={5} />
+        </DashboardShell>
       </div>
     )
   }
