@@ -310,6 +310,7 @@
 
   .dash__book-hero-visual {
     max-width: 260px;
+    margin: 0 auto;
   }
 }
 
@@ -320,6 +321,24 @@
 
   .dash__book-hero-meta-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dash__book-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dash__hero-status-select select {
+    width: 100%;
+  }
+
+  .dash .dash__btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dash .dash__btn-icon {
+    align-self: center;
   }
 }
 
