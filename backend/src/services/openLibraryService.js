@@ -37,19 +37,25 @@ function paraResumo(doc) {
   }
 }
 
-async function numeroDePaginas(workId) {
+async function metadadosComplementares(workId) {
+  const vazio = { numeroPaginas: null, primeiroAnoPublicacao: null }
   try {
     const params = new URLSearchParams({
       q: `key:/works/${workId}`,
-      fields: 'number_of_pages_median',
+      fields: 'number_of_pages_median,first_publish_year',
       limit: '1',
     })
     const response = await fetch(`${BASE_URL}/search.json?${params}`, { headers: headers() })
-    if (!response.ok) return null
+    if (!response.ok) return vazio
     const data = await response.json()
-    return data.docs?.[0]?.number_of_pages_median ?? null
+    const doc = data.docs?.[0]
+    if (!doc) return vazio
+    return {
+      numeroPaginas: doc.number_of_pages_median ?? null,
+      primeiroAnoPublicacao: doc.first_publish_year ? String(doc.first_publish_year) : null,
+    }
   } catch {
-    return null
+    return vazio
   }
 }
 
@@ -134,7 +140,10 @@ async function detalhar(workId) {
     const coverId = work.covers ? work.covers.find((c) => c > 0) : null
     const descricao = typeof work.description === 'string' ? work.description : (work.description?.value ?? null)
 
-    const [autor, numeroPaginas] = await Promise.all([nomesAutores(work.authors), numeroDePaginas(workId)])
+    const [autor, { numeroPaginas, primeiroAnoPublicacao }] = await Promise.all([
+      nomesAutores(work.authors),
+      metadadosComplementares(workId),
+    ])
 
     return {
       identificadorExterno: workId,
@@ -143,7 +152,7 @@ async function detalhar(workId) {
       descricao,
       capa: capaPorId(coverId),
       editora: null,
-      dataPublicacao: work.first_publish_date ?? null,
+      dataPublicacao: work.first_publish_date ?? primeiroAnoPublicacao,
       categoria: work.subjects && work.subjects.length > 0 ? work.subjects[0] : null,
       numeroPaginas,
     }
