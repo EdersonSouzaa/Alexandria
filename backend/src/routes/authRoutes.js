@@ -4,13 +4,7 @@ const { requireAuth } = require('../middleware/auth')
 const { validateBody } = require('../middleware/validate')
 const { authLimiter } = require('../middleware/rateLimit')
 const { asyncHandler } = require('../lib/asyncHandler')
-const {
-  registerSchema,
-  loginSchema,
-  updateProfileSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} = require('../schemas/authSchemas')
+const { registerSchema, loginSchema, updateProfileSchema } = require('../schemas/authSchemas')
 
 const router = express.Router()
 
@@ -46,25 +40,6 @@ router.put(
   validateBody(updateProfileSchema),
   asyncHandler(async (req, res) => {
     res.json(await authService.updateProfile(req.usuarioId, req.body))
-  }),
-)
-
-router.post(
-  '/forgot-password',
-  authLimiter,
-  validateBody(forgotPasswordSchema),
-  asyncHandler(async (req, res) => {
-    res.json(await authService.forgotPassword(req.body))
-  }),
-)
-
-router.post(
-  '/reset-password',
-  authLimiter,
-  validateBody(resetPasswordSchema),
-  asyncHandler(async (req, res) => {
-    await authService.resetPassword(req.body)
-    res.status(204).send()
   }),
 )
 

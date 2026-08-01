@@ -74,10 +74,6 @@ export default function LoginPage() {
           required
         />
 
-        <div className="auth-shell__row">
-          <Link to="/esqueci-senha">Esqueci minha senha</Link>
-        </div>
-
         <Button type="submit" loading={carregando}>
           Entrar
         </Button>

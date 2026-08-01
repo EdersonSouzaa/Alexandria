@@ -24,19 +24,8 @@ const updateProfileSchema = z.object({
   email: z.string().min(1, 'O e-mail é obrigatório.').email('E-mail inválido.').max(254, 'E-mail inválido.'),
 })
 
-const forgotPasswordSchema = z.object({
-  email: z.string().min(1, 'O e-mail é obrigatório.').email('E-mail inválido.'),
-})
-
-const resetPasswordSchema = z.object({
-  token: z.string().min(1, 'O token é obrigatório.'),
-  novaSenha: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres.'),
-})
-
 module.exports = {
   registerSchema,
   loginSchema,
   updateProfileSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
 }

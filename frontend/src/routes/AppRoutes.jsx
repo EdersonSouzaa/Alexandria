@@ -3,8 +3,6 @@ import ProtectedRoute from './ProtectedRoute'
 import LandingPage from '../pages/LandingPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
-import ForgotPasswordPage from '../pages/ForgotPasswordPage'
-import ResetPasswordPage from '../pages/ResetPasswordPage'
 import InicioPage from '../pages/InicioPage'
 import ExplorarPage from '../pages/ExplorarPage'
 import LivroDetalhePage from '../pages/LivroDetalhePage'
@@ -21,8 +19,6 @@ export default function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/cadastro" element={<RegisterPage />} />
-      <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
-      <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/inicio" element={<InicioPage />} />

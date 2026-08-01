@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-const crypto = require('node:crypto')
 const prisma = require('../lib/prisma')
 const { generateToken } = require('../lib/jwt')
 const { DuplicateError, InvalidCredentialsError, NotFoundError } = require('../lib/errors')
@@ -56,47 +55,6 @@ async function updateProfile(usuarioId, { name, email }) {
   return toProfileResponse(atualizado)
 }
 
-async function forgotPassword({ email }) {
-  const user = await prisma.user.findUnique({ where: { email } })
-  if (!user) {
-    throw new NotFoundError('Não existe conta cadastrada com este e-mail.')
-  }
-
-  const token = crypto.randomUUID()
-  const expiry = new Date(Date.now() + 60 * 60 * 1000)
-
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { resetPasswordToken: token, resetPasswordExpiry: expiry },
-  })
-
-  console.log(`Token de redefinição de senha gerado para o usuário ${user.email}: ${token}`)
-
-  return {
-    mensagem:
-      'Um token de redefinição foi gerado. Em produção ele seria enviado por e-mail; ' +
-      'neste ambiente de desenvolvimento ele é retornado diretamente.',
-    resetToken: token,
-  }
-}
-
-async function resetPassword({ token, novaSenha }) {
-  const user = await prisma.user.findUnique({ where: { resetPasswordToken: token } })
-  if (!user) {
-    throw new InvalidCredentialsError('Token de redefinição inválido.')
-  }
-
-  if (!user.resetPasswordExpiry || user.resetPasswordExpiry.getTime() < Date.now()) {
-    throw new InvalidCredentialsError('Token de redefinição expirado.')
-  }
-
-  const hash = await bcrypt.hash(novaSenha, 10)
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { password: hash, resetPasswordToken: null, resetPasswordExpiry: null },
-  })
-}
-
 async function buscarUsuarioOuFalhar(usuarioId) {
   const user = await prisma.user.findUnique({ where: { id: usuarioId } })
   if (!user) {
@@ -114,6 +72,4 @@ module.exports = {
   login,
   getProfile,
   updateProfile,
-  forgotPassword,
-  resetPassword,
 }

@@ -229,24 +229,6 @@
   transition: background-color 600000s 0s, color 600000s 0s;
 }
 
-.auth-shell__row {
-  display: flex;
-  justify-content: flex-end;
-  margin: 0 0 12px;
-}
-
-.auth-shell__row a {
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--auth-secondary);
-  text-decoration: none;
-}
-
-.auth-shell__row a:hover {
-  color: var(--auth-primary);
-  text-decoration: underline;
-}
-
 .auth-shell__card .btn-primary {
   width: 100%;
   min-height: 44px;

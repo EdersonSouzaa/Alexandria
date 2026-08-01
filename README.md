@@ -20,7 +20,6 @@ ALEXANDRIA é um "Goodreads" pessoal, gratuito e em português: um lugar para or
 
 ### Conta e autenticação
 - Cadastro e login de usuários com autenticação via JWT (token stateless, expira em 24h).
-- Recuperação de senha por token temporário (esqueci a senha / redefinir senha). Em ambiente de desenvolvimento, sem provedor de e-mail configurado, o token é retornado na resposta da API e logado no backend — ver `backend/.env.example`.
 - Perfil do usuário com consulta e edição de dados.
 - Isolamento total de dados entre contas diferentes (cada usuário só acessa seus próprios registros).
 
@@ -157,7 +156,7 @@ API REST em JSON sob o prefixo `/api`, organizada por router de domínio (`src/r
 
 | Router | Rota base | Responsabilidade |
 |---|---|---|
-| `authRoutes` | `/api/auth` | Registro, login, perfil, esqueci/redefinir senha |
+| `authRoutes` | `/api/auth` | Registro, login, perfil |
 | `livroRoutes` | `/api/livros` | Em alta (`/tendencias`), busca (`/buscar`) e detalhe (`/openlibrary/:id`) via Open Library |
 | `bibliotecaRoutes` | `/api/biblioteca` | Adicionar/listar/remover livros, status de leitura, favoritos |
 | `avaliacaoRoutes` | `/api/avaliacoes` | CRUD de avaliações (nota + resenha) + export CSV |

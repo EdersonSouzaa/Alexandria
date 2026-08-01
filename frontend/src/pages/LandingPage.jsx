@@ -506,9 +506,6 @@ export default function LandingPage() {
                     <Link to="/login">Entrar</Link>
                   </li>
                 )}
-                <li>
-                  <Link to="/esqueci-senha">Esqueci minha senha</Link>
-                </li>
                 {!user && (
                   <li>
                     <Link to="/cadastro">Criar conta grátis</Link>
