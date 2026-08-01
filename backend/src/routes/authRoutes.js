@@ -10,7 +10,6 @@ const {
   updateProfileSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  googleAuthSchema,
 } = require('../schemas/authSchemas')
 
 const router = express.Router()
@@ -30,15 +29,6 @@ router.post(
   validateBody(loginSchema),
   asyncHandler(async (req, res) => {
     res.json(await authService.login(req.body))
-  }),
-)
-
-router.post(
-  '/google',
-  authLimiter,
-  validateBody(googleAuthSchema),
-  asyncHandler(async (req, res) => {
-    res.json(await authService.loginWithGoogle(req.body))
   }),
 )
 

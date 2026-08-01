@@ -33,15 +33,10 @@ const resetPasswordSchema = z.object({
   novaSenha: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres.'),
 })
 
-const googleAuthSchema = z.object({
-  credential: z.string().min(1, 'Credencial do Google ausente.').max(4096, 'Credencial do Google inválida.'),
-})
-
 module.exports = {
   registerSchema,
   loginSchema,
   updateProfileSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  googleAuthSchema,
 }
