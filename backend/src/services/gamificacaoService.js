@@ -156,6 +156,12 @@ async function postCriado(usuarioId) {
   await salvar(usuarioId, g)
 }
 
+async function postRemovido(usuarioId) {
+  const g = await obterOuFalhar(usuarioId)
+  g.totalPosts = Math.max(0, g.totalPosts - 1)
+  await salvar(usuarioId, g)
+}
+
 async function curtidaDada(usuarioId) {
   const g = await obterOuFalhar(usuarioId)
   aplicarAtividade(g, 'CURTIDA_DADA')
@@ -211,6 +217,7 @@ module.exports = {
   avaliacaoCriada,
   avaliacaoRemovida,
   postCriado,
+  postRemovido,
   curtidaDada,
   comentarioCriado,
   consultarStatus,

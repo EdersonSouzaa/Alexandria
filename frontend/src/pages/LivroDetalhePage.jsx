@@ -367,7 +367,7 @@ export default function LivroDetalhePage() {
     const confirmado = await confirmar({
       titulo: 'Excluir avaliação?',
       mensagem: `Sua nota e a resenha de "${livro?.titulo ?? 'este livro'}" serão apagadas para sempre.`,
-      detalhe: 'A publicação na comunidade continua no feed, sem vínculo com a avaliação.',
+      detalhe: 'A publicação dela na comunidade sai do feed junto, com curtidas e comentários.',
       textoConfirmar: 'Excluir avaliação',
     })
     if (!confirmado) return

@@ -96,7 +96,7 @@ model ComunidadePost {
 
   usuario     User                   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   livro       Livro?                 @relation(fields: [livroId], references: [id])
-  avaliacao   Avaliacao?             @relation(fields: [avaliacaoId], references: [id])
+  avaliacao   Avaliacao?             @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade)
   curtidas    ComunidadeCurtida[]
   comentarios ComunidadeComentario[]
 

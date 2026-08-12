@@ -72,8 +72,17 @@ async function atualizar(usuarioId, avaliacaoId, { nota, resenha }) {
 
 async function remover(usuarioId, avaliacaoId) {
   await buscarAvaliacao(usuarioId, avaliacaoId)
+
+  // A publicação gerada por esta avaliação sai junto (cascade no banco), levando
+  // também suas curtidas e comentários. Localizamos antes só para ajustar o contador.
+  const post = await prisma.comunidadePost.findUnique({ where: { avaliacaoId } })
+
   await prisma.avaliacao.delete({ where: { id: avaliacaoId } })
+
   await gamificacaoService.avaliacaoRemovida(usuarioId)
+  if (post) {
+    await gamificacaoService.postRemovido(usuarioId)
+  }
 }
 
 async function exportarCsv(usuarioId) {
