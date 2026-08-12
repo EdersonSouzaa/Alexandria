@@ -175,34 +175,6 @@ Apenas `/api/auth/login`, `/register`, `/forgot-password`, `/reset-password` e `
 
 Migrações versionadas via Prisma (`prisma migrate`), com histórico em `backend/prisma/migrations/`.
 
-## Estrutura do projeto
-
-```text
-Alexandria/
-  backend/    API REST em Node.js + Express + Prisma
-    prisma/
-      schema.prisma   Modelo de dados (tabelas, relações, enums)
-      migrations/     Histórico de migrações aplicadas
-    src/
-      lib/            Prisma client, JWT, cache TTL, erros customizados
-      middleware/      Autenticação, validação (Zod), tratamento global de erros
-      schemas/         Schemas Zod de request por domínio
-      services/        Regras de negócio por domínio (inclui openLibraryService.js)
-      routes/          Routers Express por domínio
-      app.js           Configuração do Express (CORS, rotas, error handler)
-      server.js        Ponto de entrada (sobe o servidor HTTP)
-    test/              Testes (node --test + Supertest)
-  frontend/   Aplicação web em React + Vite
-    src/
-      assets/       Imagens e logo do app
-      routes/       Definição de rotas e proteção de rotas
-      context/      Estado global (Auth, Gamificação)
-      pages/        Telas da aplicação
-      components/   Componentes reutilizáveis (DashboardShell, Navbar, Button, Input...)
-      services/      Chamadas à API por domínio
-      styles/        CSS global + por página/componente
-```
-
 ## Como rodar localmente
 
 ### 1. Backend
