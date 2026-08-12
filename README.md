@@ -10,12 +10,6 @@ ALEXANDRIA é um "Goodreads" pessoal, gratuito e em português: um lugar para or
 
 É uma aplicação full-stack (React + Node.js), estruturada como monorepo com frontend e backend publicados separadamente.
 
-- **Frontend**: https://frontend-production-afa3.up.railway.app
-- **Backend**: https://backend-production-ddd2.up.railway.app
-- **Health check da API**: https://backend-production-ddd2.up.railway.app/api/health
-
-> Observação: abrir a URL raiz do backend diretamente pode retornar acesso negado, pois a maior parte da API exige autenticação JWT. Para verificar disponibilidade, use o endpoint `/api/health`.
-
 ## Funcionalidades
 
 ### Conta e autenticação
