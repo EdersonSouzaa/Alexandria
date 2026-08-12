@@ -5,6 +5,7 @@ import RatingStars from '../components/RatingStars'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import DashboardShell from '../components/DashboardShell'
+import { useConfirm } from '../components/useConfirm'
 import { PageHeadSkeleton, StatsSkeleton, ReviewsSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
 import '../styles/avaliacoes.css'
@@ -84,6 +85,7 @@ function IconLixo() {
 
 export default function MinhasAvaliacoesPage() {
   const navigate = useNavigate()
+  const { confirmar, dialogoConfirmacao } = useConfirm()
 
   const [avaliacoes, setAvaliacoes] = useState([])
   const [carregando, setCarregando] = useState(true)
@@ -123,8 +125,16 @@ export default function MinhasAvaliacoesPage() {
     carregar()
   }
 
-  async function remover(id) {
-    await avaliacaoService.remover(id)
+  async function remover(avaliacao) {
+    const confirmado = await confirmar({
+      titulo: 'Excluir avaliação?',
+      mensagem: `Sua nota e a resenha de "${avaliacao.livro.titulo}" serão apagadas para sempre.`,
+      detalhe: 'A publicação na comunidade continua no feed, sem vínculo com a avaliação.',
+      textoConfirmar: 'Excluir avaliação',
+    })
+    if (!confirmado) return
+
+    await avaliacaoService.remover(avaliacao.id)
     carregar()
   }
 
@@ -296,7 +306,7 @@ export default function MinhasAvaliacoesPage() {
                             <button
                               type="button"
                               className="dash__review-actions-danger"
-                              onClick={() => remover(avaliacao.id)}
+                              onClick={() => remover(avaliacao)}
                               aria-label="Excluir avaliação"
                             >
                               <IconLixo />
@@ -312,6 +322,8 @@ export default function MinhasAvaliacoesPage() {
           </div>
         )}
       </DashboardShell>
+
+      {dialogoConfirmacao}
     </div>
   )
 }

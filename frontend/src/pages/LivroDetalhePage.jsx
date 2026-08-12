@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'
 import { useGamificacao } from '../context/GamificacaoContext'
 import DashboardShell from '../components/DashboardShell'
 import RatingStars from '../components/RatingStars'
+import { useConfirm } from '../components/useConfirm'
 import { iniciais } from '../components/DashboardIcons'
 import { CrumbsSkeleton, BookHeroSkeleton, RevCardsSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
@@ -180,6 +181,7 @@ export default function LivroDetalhePage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { refresh: refreshGamificacao } = useGamificacao()
+  const { confirmar, dialogoConfirmacao } = useConfirm()
 
   const [livro, setLivro] = useState(null)
   const [carregando, setCarregando] = useState(true)
@@ -362,6 +364,14 @@ export default function LivroDetalhePage() {
   }
 
   async function handleRemoverAvaliacao(post) {
+    const confirmado = await confirmar({
+      titulo: 'Excluir avaliação?',
+      mensagem: `Sua nota e a resenha de "${livro?.titulo ?? 'este livro'}" serão apagadas para sempre.`,
+      detalhe: 'A publicação na comunidade continua no feed, sem vínculo com a avaliação.',
+      textoConfirmar: 'Excluir avaliação',
+    })
+    if (!confirmado) return
+
     await avaliacaoService.remover(post.avaliacaoId)
     await carregarAvaliacoes()
     refreshGamificacao()
@@ -645,6 +655,8 @@ export default function LivroDetalhePage() {
           )}
         </section>
       </DashboardShell>
+
+      {dialogoConfirmacao}
     </div>
   )
 }

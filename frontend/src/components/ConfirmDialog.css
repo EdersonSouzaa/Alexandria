@@ -1,0 +1,155 @@
+.confirm-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 21, 36, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: confirm-dialog-backdrop-in 0.2s ease;
+}
+
+.confirm-dialog__card {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  padding: 34px 32px 28px;
+  border-radius: var(--dash-radius-lg);
+  background: var(--dash-surface-lowest);
+  box-shadow: var(--dash-shadow-lg);
+  animation: confirm-dialog-card-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.confirm-dialog__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--dash-error);
+}
+
+.confirm-dialog__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  margin: 4px auto 16px;
+  border-radius: 50%;
+  color: var(--dash-on-error-container);
+  background: var(--dash-error-container);
+  box-shadow: 0 0 0 6px var(--dash-surface-container);
+}
+
+.confirm-dialog__card h2 {
+  font-family: var(--dash-serif);
+  font-size: 1.25rem;
+  color: var(--dash-primary);
+  margin: 0 0 8px;
+}
+
+.confirm-dialog__card p {
+  color: var(--dash-on-surface-variant);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.confirm-dialog__detalhe {
+  margin-top: 10px !important;
+  font-size: 0.85rem !important;
+  color: var(--dash-outline) !important;
+}
+
+.confirm-dialog__acoes {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.confirm-dialog__btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.confirm-dialog__btn:hover {
+  transform: translateY(-1px);
+}
+
+.confirm-dialog__btn:focus-visible {
+  outline: 2px solid var(--dash-secondary);
+  outline-offset: 2px;
+}
+
+.confirm-dialog__btn--cancelar {
+  border: 1px solid var(--dash-outline-variant);
+  background: var(--dash-surface-lowest);
+  color: var(--dash-primary);
+}
+
+.confirm-dialog__btn--cancelar:hover {
+  background: var(--dash-surface-container);
+}
+
+.confirm-dialog__btn--confirmar {
+  border: none;
+  background: var(--dash-error);
+  color: #ffffff;
+}
+
+.confirm-dialog__btn--confirmar:hover {
+  background: var(--dash-on-error-container);
+}
+
+@keyframes confirm-dialog-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-dialog-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .confirm-dialog__acoes {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog__backdrop,
+  .confirm-dialog__card,
+  .confirm-dialog__btn {
+    animation: none;
+    transition: none;
+  }
+}

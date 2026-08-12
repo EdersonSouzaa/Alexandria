@@ -4,6 +4,7 @@ import { bibliotecaService } from '../services/bibliotecaService'
 import { useGamificacao } from '../context/GamificacaoContext'
 import DashboardShell from '../components/DashboardShell'
 import HeroCover from '../components/HeroCover'
+import { useConfirm } from '../components/useConfirm'
 import { IconEstrela } from '../components/DashboardIcons'
 import { HeroSkeleton, StatsSkeleton, PageHeadSkeleton, BookGridSkeleton } from '../components/Skeleton'
 import '../styles/dashboard.css'
@@ -84,6 +85,7 @@ function IconXCircle() {
 export default function MinhaBibliotecaPage() {
   const { refresh: refreshGamificacao } = useGamificacao()
   const navigate = useNavigate()
+  const { confirmar, dialogoConfirmacao } = useConfirm()
 
   const [itens, setItens] = useState([])
   const [carregando, setCarregando] = useState(true)
@@ -127,6 +129,14 @@ export default function MinhaBibliotecaPage() {
   }
 
   async function handleRemover(item) {
+    const confirmado = await confirmar({
+      titulo: 'Remover da biblioteca?',
+      mensagem: `"${item.livro.titulo}" vai sair da sua estante, junto com o status de leitura e a marcação de favorito.`,
+      detalhe: 'Sua avaliação do livro, se houver, é mantida.',
+      textoConfirmar: 'Remover livro',
+    })
+    if (!confirmado) return
+
     await bibliotecaService.remover(item.id)
     refreshGamificacao()
     carregar()
@@ -362,6 +372,8 @@ export default function MinhaBibliotecaPage() {
           </div>
         )}
       </DashboardShell>
+
+      {dialogoConfirmacao}
     </div>
   )
 }
